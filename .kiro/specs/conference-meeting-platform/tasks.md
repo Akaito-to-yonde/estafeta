@@ -178,8 +178,8 @@ uploaded manually via the Supabase dashboard or CLI.
 
 ### Step 3 — Angular core setup
 
-- [ ] 8. Create shared models, i18n constants, pipes, and validators
-  - [ ] 8.1 Create TypeScript model files
+- [x] 8. Create shared models, i18n constants, pipes, and validators
+  - [x] 8.1 Create TypeScript model files
     - `src/app/core/models/profile.model.ts` — `Profile`, `CreateProfileDto`, `ProfileFilters`,
       `ProfileEstado`, `UserCategoria`
     - `src/app/core/models/conference.model.ts` — `Conference`, `ConferenceWithSpeaker`,
@@ -191,7 +191,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - `src/app/core/models/pagination.model.ts` — `PaginatedResult<T>`
     - _Requirements: all_
 
-  - [ ] 8.2 Create Spanish UI string constants
+  - [x] 8.2 Create Spanish UI string constants
     - Write `src/app/shared/i18n/es.ts` with all keys from the design (`ES.auth`, `ES.register`,
       `ES.conferences`, `ES.meetings`, `ES.admin`, `ES.common`)
     - _Requirements: Design — Full Spanish UI_
@@ -200,7 +200,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - Assert no key in the `ES` object is `undefined` or empty string
     - **Property 35: Spanish String Coverage is Complete**
     - **Validates: Design — Full Spanish UI**
-  - [ ] 8.4 Create shared validators
+  - [x] 8.4 Create shared validators
     - `src/app/shared/validators/email-format.validator.ts` — RFC 5322 email `ValidatorFn`
     - `src/app/shared/validators/future-date.validator.ts` — rejects past datetimes
     - `src/app/shared/validators/date-range.validator.ts` — cross-field `ending > start`
@@ -215,7 +215,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Properties 3, 9, 10, 13**
     - **Validates: Requirements 1.5, 4.3, 4.4, 7.3, 9.6, 10.9**
 
-  - [ ] 8.6 Create `DateFormatPipe`
+  - [x] 8.6 Create `DateFormatPipe`
     - `src/app/shared/pipes/date-format.pipe.ts`
     - Wraps `date-fns/format` with the `es` locale
     - Pure pipe, `transform(value: string | Date, fmt: string): string`
@@ -226,8 +226,8 @@ uploaded manually via the Supabase dashboard or CLI.
     - Test null / invalid input handling
     - _Requirements: Design — Full Spanish UI_
 
-- [ ] 9. Create core Angular services
-  - [ ] 9.1 Create `AuthService` (`src/app/core/auth/auth.service.ts`)
+- [x] 9. Create core Angular services
+  - [x] 9.1 Create `AuthService` (`src/app/core/auth/auth.service.ts`)
     - Wrap `SupabaseService`; expose `session: Signal<Session | null>`, `profile: Signal<Profile | null>`,
       `isLoading: Signal<boolean>`
     - Implement `checkEmail()`, `signIn()`, `signOut()`, `setPassword()`, `refreshSession()`
@@ -241,7 +241,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Property 5: Pending Users Never Receive a Session**
     - **Validates: Requirements 2.2, 5.1**
 
-  - [ ] 9.3 Create `OverlapService` (`src/app/core/overlap/overlap.service.ts`)
+  - [x] 9.3 Create `OverlapService` (`src/app/core/overlap/overlap.service.ts`)
     - Implement pure `intervalsOverlap(a, b): boolean` using `a.start < b.end && b.start < a.end`
     - Implement `findOverlaps(proposed, existing[]): TimeInterval[]`
     - Implement `checkOverlapRemote(req: OverlapCheckRequest): Promise<OverlapCheckResponse>` —
@@ -254,7 +254,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - `findOverlaps`: result is always a subset of `existing`
     - **Property 15: Time-Interval Overlap Detection**
     - **Validates: Requirements 7.10, 9.3, 10.11**
-  - [ ] 9.5 Create `ProfileService` (`src/app/core/profile/profile.service.ts`)
+  - [x] 9.5 Create `ProfileService` (`src/app/core/profile/profile.service.ts`)
     - Expose `pendingProfiles: Signal<Profile[]>` and `allProfiles: Signal<Profile[]>`
     - Implement `createProfile()`, `getProfile()`, `getPendingProfiles()`, `getAllProfiles()`,
       `approveProfile()`, `rejectAndDeleteProfile()`, `updateEstado()`
@@ -268,7 +268,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Properties 32, 33, 34**
     - **Validates: Design — Supabase Realtime**
 
-  - [ ] 9.7 Create `ConferenceService` (`src/app/core/conference/conference.service.ts`)
+  - [x] 9.7 Create `ConferenceService` (`src/app/core/conference/conference.service.ts`)
     - Expose `conferences: Signal<ConferenceWithSpeaker[]>` and `upcomingConferences: Signal<...>`
       (computed: `starting >= now`, sorted ascending)
     - Implement `getConferenceById()`, `getMyConferences()`, `getAllConferences()`,
@@ -282,7 +282,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - Realtime INSERT / UPDATE / DELETE patch signal correctly
     - **Properties 14, 16, 32–34**
     - **Validates: Requirements 7.7, 8.1**
-  - [ ] 9.9 Create `MeetingService` (`src/app/core/meeting/meeting.service.ts`)
+  - [x] 9.9 Create `MeetingService` (`src/app/core/meeting/meeting.service.ts`)
     - Expose `meetings`, `meetingsAsClient`, `meetingsAsHost`, `actionRequiredCount` signals
     - Implement `getMeetingById()`, `getAllMeetings()`, `proposeMeeting()`, `acceptMeeting()`,
       `rejectMeeting()`, `rescheduleMeeting()`, `cancelMeetings()`
@@ -305,25 +305,25 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Properties 18, 20, 21, 22, 23, 25, 26**
     - **Validates: Requirements 9.2, 10.1–10.6, 10.8, 10.10, 12.1–12.3**
 
-- [ ] 10. Create route guards
-  - [ ] 10.1 Create `authGuard` (`src/app/core/guards/auth.guard.ts`)
+- [x] 10. Create route guards
+  - [x] 10.1 Create `authGuard` (`src/app/core/guards/auth.guard.ts`)
     - Injects `AuthService`; if `session()` is null, stores target URL in a `RedirectService`
       and routes to `/auth/login`
     - Returns `true` when session is present
     - Stored URL is consumed exactly once after login
     - _Requirements: 6.5, 15.2, 15.3_
 
-  - [ ] 10.2 Create `roleGuard` (`src/app/core/guards/role.guard.ts`)
+  - [x] 10.2 Create `roleGuard` (`src/app/core/guards/role.guard.ts`)
     - Factory function `roleGuard(allowedRoles: UserCategoria[]): CanActivateFn`
     - Reads `AuthService.profile().categoria`; if not in `allowedRoles`, navigates to role-home
       without storing the forbidden URL
     - _Requirements: 6.1–6.4, 15.4_
 
-  - [ ] 10.3 Create `publicOnlyGuard` (`src/app/core/guards/public-only.guard.ts`)
+  - [x] 10.3 Create `publicOnlyGuard` (`src/app/core/guards/public-only.guard.ts`)
     - Redirects authenticated users away from `/auth/login` and `/auth/register`
     - _Requirements: 15.2_
 
-  - [ ] 10.4 Create `magicLinkGuard` (`src/app/core/guards/magic-link.guard.ts`)
+  - [x] 10.4 Create `magicLinkGuard` (`src/app/core/guards/magic-link.guard.ts`)
     - Checks `window.location.hash` for a valid Supabase `access_token` fragment
     - Returns `false` and navigates to `/auth/login` if token is absent
     - _Requirements: Design — Magic-link-only set-password route_
@@ -336,21 +336,21 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Properties 11, 30, 31, 36**
     - **Validates: Requirements 6.1–6.4, 15.3, 15.4**
 
-- [ ] 11. Wire up `app.routes.ts` with all lazy-loaded routes and guards
+- [x] 11. Wire up `app.routes.ts` with all lazy-loaded routes and guards
   - Register all routes per the design Route Architecture section
   - Use `loadComponent` for each feature component
   - Attach appropriate guards to each route
   - _Requirements: 6.1–6.5, 15.2_
 
-- [ ] 12. Checkpoint — Core services, guards, and routes complete
+- [x] 12. Checkpoint — Core services, guards, and routes complete
   - Ensure all tests pass. Ask the user if questions arise.
 
 ---
 
 ### Step 4 — Auth feature
 
-- [ ] 13. Implement auth components
-  - [ ] 13.1 Create `LoginComponent` (`src/app/auth/login/login.component.ts`)
+- [x] 13. Implement auth components
+  - [x] 13.1 Create `LoginComponent` (`src/app/auth/login/login.component.ts`)
     - Two-step flow: step 1 calls `AuthService.checkEmail()` to verify email exists and estado
     - If `estado = 'pending'`: show `ES.auth.pendingMessage`, do not proceed to password step
     - If email not found: show `ES.auth.notRegisteredError`
@@ -369,7 +369,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Property 12: Post-Login Redirect to Calendar**
     - **Validates: Requirements 2.1, 5.2, 5.9–5.11**
 
-  - [ ] 13.3 Create `RegisterComponent` (`src/app/auth/register/register.component.ts`)
+  - [x] 13.3 Create `RegisterComponent` (`src/app/auth/register/register.component.ts`)
     - `FormGroup` with all required + optional fields from Requirement 1.1
     - `categoria` dropdown excludes `admin` (values: producer, provider, services, client)
     - On submit: call `ProfileService.createProfile()`; on success show `ES.register.successMessage`
@@ -384,7 +384,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - All required fields filled → form valid (assuming no duplicate)
     - **Properties 1, 2, 3**
     - **Validates: Requirements 1.2, 1.4, 1.5**
-  - [ ] 13.5 Create `SetPasswordComponent` (`src/app/auth/set-password/set-password.component.ts`)
+  - [x] 13.5 Create `SetPasswordComponent` (`src/app/auth/set-password/set-password.component.ts`)
     - Protected by `magicLinkGuard`
     - `FormGroup` with `password` (min 8 chars) + `passwordConfirmation` (must match) controls
     - On submit: call `AuthService.setPassword()`; on success redirect to role-appropriate home

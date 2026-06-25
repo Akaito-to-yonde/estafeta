@@ -1,0 +1,77 @@
+<div class="login-container">
+  <h1>{{ es.auth.loginTitle }}</h1>
+
+  @if (step() === 1) {
+    <form [formGroup]="emailForm" (ngSubmit)="onEmailSubmit()">
+      <div class="field">
+        <label for="email">{{ es.auth.emailLabel }}</label>
+        <input
+          id="email"
+          type="email"
+          pInputText
+          formControlName="email"
+          [attr.aria-describedby]="emailForm.controls.email.invalid && emailForm.controls.email.touched ? 'email-error' : null"
+          autocomplete="email"
+        />
+        @if (emailForm.controls.email.touched && emailForm.controls.email.hasError('required')) {
+          <small id="email-error" class="field-error" role="alert">
+            {{ es.common.required }}
+          </small>
+        } @else if (emailForm.controls.email.touched && emailForm.controls.email.hasError('emailFormat')) {
+          <small id="email-error" class="field-error" role="alert">
+            {{ es.common.invalidEmail }}
+          </small>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage()!" />
+      }
+
+      <p-button
+        type="submit"
+        [label]="isLoading() ? es.common.loading : es.auth.loginButton"
+        [disabled]="isLoading()"
+        [loading]="isLoading()"
+      />
+    </form>
+  }
+
+  @if (step() === 2) {
+    <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()">
+      <div class="field">
+        <span class="email-display">{{ emailValue }}</span>
+      </div>
+
+      <div class="field">
+        <label for="password">{{ es.auth.passwordLabel }}</label>
+        <input
+          id="password"
+          type="password"
+          pInputText
+          formControlName="password"
+          [attr.aria-describedby]="passwordForm.controls.password.invalid && passwordForm.controls.password.touched ? 'password-error' : null"
+          autocomplete="current-password"
+        />
+        @if (passwordForm.controls.password.touched && passwordForm.controls.password.hasError('required')) {
+          <small id="password-error" class="field-error" role="alert">
+            {{ es.common.required }}
+          </small>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage()!" />
+      }
+
+      <p-button
+        type="submit"
+        [label]="isLoading() ? es.common.loading : es.auth.loginButton"
+        [disabled]="isLoading()"
+        [loading]="isLoading()"
+      />
+    </form>
+  }
+
+  <a routerLink="/auth/register">{{ es.auth.registerLink }}</a>
+</div>

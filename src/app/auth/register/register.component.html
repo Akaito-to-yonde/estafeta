@@ -1,0 +1,273 @@
+<section class="register-page" aria-labelledby="register-title">
+  <h1 id="register-title">{{ ES.register.title }}</h1>
+
+  @if (success()) {
+    <div class="register-success" role="status" aria-live="polite">
+      <p>{{ ES.register.successMessage }}</p>
+      <a routerLink="/auth/login">{{ ES.auth.loginButton }}</a>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+      <!-- Email -->
+      <div class="field">
+        <label for="email">{{ ES.register.fields.email }}</label>
+        <input
+          id="email"
+          type="email"
+          pInputText
+          formControlName="email"
+          autocomplete="email"
+          [attr.aria-describedby]="
+            (form.controls.email.touched && form.controls.email.invalid)
+              ? 'email-error'
+              : null
+          "
+          [attr.aria-invalid]="
+            form.controls.email.touched && form.controls.email.invalid
+              ? 'true'
+              : null
+          "
+        />
+        @if (form.controls.email.touched) {
+          @if (form.controls.email.errors?.['required']) {
+            <small id="email-error" class="field-error">{{ ES.common.required }}</small>
+          } @else if (form.controls.email.errors?.['emailFormat']) {
+            <small id="email-error" class="field-error">{{ ES.common.invalidEmail }}</small>
+          } @else if (form.controls.email.errors?.['emailExists']) {
+            <small id="email-error" class="field-error">{{ ES.register.emailExists }}</small>
+          }
+        }
+        @if (form.controls.email.pending) {
+          <small class="field-hint">{{ ES.common.loading }}</small>
+        }
+      </div>
+
+      <!-- Categoría -->
+      <div class="field">
+        <label for="categoria">{{ ES.register.fields.categoria }}</label>
+        <p-select
+          inputId="categoria"
+          formControlName="categoria"
+          [options]="categoriaOptions"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="ES.register.fields.categoria"
+          [attr.aria-describedby]="
+            (form.controls.categoria.touched && form.controls.categoria.invalid)
+              ? 'categoria-error'
+              : null
+          "
+          [attr.aria-invalid]="
+            form.controls.categoria.touched && form.controls.categoria.invalid
+              ? 'true'
+              : null
+          "
+        />
+        @if (form.controls.categoria.touched && form.controls.categoria.errors?.['required']) {
+          <small id="categoria-error" class="field-error">{{ ES.common.required }}</small>
+        }
+      </div>
+
+      <!-- Nombre empresa -->
+      <div class="field">
+        <label for="nombre_empresa">{{ ES.register.fields.nombreEmpresa }}</label>
+        <input
+          id="nombre_empresa"
+          type="text"
+          pInputText
+          formControlName="nombre_empresa"
+          [attr.aria-describedby]="
+            (form.controls.nombre_empresa.touched && form.controls.nombre_empresa.invalid)
+              ? 'nombre-error'
+              : null
+          "
+          [attr.aria-invalid]="
+            form.controls.nombre_empresa.touched && form.controls.nombre_empresa.invalid
+              ? 'true'
+              : null
+          "
+        />
+        @if (form.controls.nombre_empresa.touched) {
+          @if (form.controls.nombre_empresa.errors?.['required']) {
+            <small id="nombre-error" class="field-error">{{ ES.common.required }}</small>
+          } @else if (form.controls.nombre_empresa.errors?.['maxlength']) {
+            <small id="nombre-error" class="field-error">{{ ES.common.maxLength(255) }}</small>
+          }
+        }
+      </div>
+
+      <!-- Dirección legal -->
+      <div class="field">
+        <label for="direccion_legal">{{ ES.register.fields.direccionLegal }}</label>
+        <input
+          id="direccion_legal"
+          type="text"
+          pInputText
+          formControlName="direccion_legal"
+          [attr.aria-describedby]="
+            (form.controls.direccion_legal.touched && form.controls.direccion_legal.invalid)
+              ? 'direccion-error'
+              : null
+          "
+          [attr.aria-invalid]="
+            form.controls.direccion_legal.touched && form.controls.direccion_legal.invalid
+              ? 'true'
+              : null
+          "
+        />
+        @if (form.controls.direccion_legal.touched) {
+          @if (form.controls.direccion_legal.errors?.['required']) {
+            <small id="direccion-error" class="field-error">{{ ES.common.required }}</small>
+          } @else if (form.controls.direccion_legal.errors?.['maxlength']) {
+            <small id="direccion-error" class="field-error">{{ ES.common.maxLength(500) }}</small>
+          }
+        }
+      </div>
+
+      <!-- Contacto -->
+      <div class="field">
+        <label for="contacto">{{ ES.register.fields.contacto }}</label>
+        <input
+          id="contacto"
+          type="text"
+          pInputText
+          formControlName="contacto"
+          [attr.aria-describedby]="
+            (form.controls.contacto.touched && form.controls.contacto.invalid)
+              ? 'contacto-error'
+              : null
+          "
+          [attr.aria-invalid]="
+            form.controls.contacto.touched && form.controls.contacto.invalid
+              ? 'true'
+              : null
+          "
+        />
+        @if (form.controls.contacto.touched) {
+          @if (form.controls.contacto.errors?.['required']) {
+            <small id="contacto-error" class="field-error">{{ ES.common.required }}</small>
+          } @else if (form.controls.contacto.errors?.['maxlength']) {
+            <small id="contacto-error" class="field-error">{{ ES.common.maxLength(255) }}</small>
+          }
+        }
+      </div>
+
+      <!-- Teléfono fijo (optional) -->
+      <div class="field">
+        <label for="num_fijo">{{ ES.register.fields.numFijo }}</label>
+        <input
+          id="num_fijo"
+          type="tel"
+          pInputText
+          formControlName="num_fijo"
+          autocomplete="tel"
+          [attr.aria-describedby]="
+            (form.controls.num_fijo.touched && form.controls.num_fijo.invalid)
+              ? 'num-fijo-error'
+              : null
+          "
+          [attr.aria-invalid]="
+            form.controls.num_fijo.touched && form.controls.num_fijo.invalid
+              ? 'true'
+              : null
+          "
+        />
+        @if (form.controls.num_fijo.touched && form.controls.num_fijo.errors?.['maxlength']) {
+          <small id="num-fijo-error" class="field-error">{{ ES.common.maxLength(20) }}</small>
+        }
+      </div>
+
+      <!-- Teléfono móvil (optional) -->
+      <div class="field">
+        <label for="num_movil">{{ ES.register.fields.numMovil }}</label>
+        <input
+          id="num_movil"
+          type="tel"
+          pInputText
+          formControlName="num_movil"
+          autocomplete="tel-mobile"
+          [attr.aria-describedby]="
+            (form.controls.num_movil.touched && form.controls.num_movil.invalid)
+              ? 'num-movil-error'
+              : null
+          "
+          [attr.aria-invalid]="
+            form.controls.num_movil.touched && form.controls.num_movil.invalid
+              ? 'true'
+              : null
+          "
+        />
+        @if (form.controls.num_movil.touched && form.controls.num_movil.errors?.['maxlength']) {
+          <small id="num-movil-error" class="field-error">{{ ES.common.maxLength(20) }}</small>
+        }
+      </div>
+
+      <!-- Actividad (optional) -->
+      <div class="field">
+        <label for="actividad">{{ ES.register.fields.actividad }}</label>
+        <textarea
+          id="actividad"
+          pTextarea
+          formControlName="actividad"
+          rows="3"
+          [attr.aria-describedby]="
+            (form.controls.actividad.touched && form.controls.actividad.invalid)
+              ? 'actividad-error'
+              : null
+          "
+          [attr.aria-invalid]="
+            form.controls.actividad.touched && form.controls.actividad.invalid
+              ? 'true'
+              : null
+          "
+        ></textarea>
+        @if (form.controls.actividad.touched && form.controls.actividad.errors?.['maxlength']) {
+          <small id="actividad-error" class="field-error">{{ ES.common.maxLength(500) }}</small>
+        }
+      </div>
+
+      <!-- Oferta / búsqueda (optional) -->
+      <div class="field">
+        <label for="oferta_busqueda">{{ ES.register.fields.ofertaBusqueda }}</label>
+        <textarea
+          id="oferta_busqueda"
+          pTextarea
+          formControlName="oferta_busqueda"
+          rows="4"
+          [attr.aria-describedby]="
+            (form.controls.oferta_busqueda.touched && form.controls.oferta_busqueda.invalid)
+              ? 'oferta-error'
+              : null
+          "
+          [attr.aria-invalid]="
+            form.controls.oferta_busqueda.touched && form.controls.oferta_busqueda.invalid
+              ? 'true'
+              : null
+          "
+        ></textarea>
+        @if (form.controls.oferta_busqueda.touched && form.controls.oferta_busqueda.errors?.['maxlength']) {
+          <small id="oferta-error" class="field-error">{{ ES.common.maxLength(1000) }}</small>
+        }
+      </div>
+
+      <!-- Global error -->
+      @if (errorMessage()) {
+        <div class="form-error" role="alert" aria-live="assertive">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <!-- Submit -->
+      <p-button
+        type="submit"
+        [label]="isLoading() ? ES.common.loading : ES.register.submitButton"
+        [disabled]="isLoading()"
+        [loading]="isLoading()"
+        aria-live="polite"
+      />
+    </form>
+
+    <a routerLink="/auth/login" class="back-link">{{ ES.common.back }}</a>
+  }
+</section>

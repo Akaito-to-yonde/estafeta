@@ -6,9 +6,12 @@ import { environment } from '../environments/environment';
   providedIn: 'root',
 })
 export class SupabaseService {
-  private supabase: SupabaseClient = createClient(environment.supabaseUrl, environment.supabaseKey);
+  private readonly _client: SupabaseClient = createClient(
+    environment.supabaseUrl,
+    environment.supabaseKey
+  );
 
-  getTodos() {
-    return this.supabase.from('todos').select('*');
+  get client(): SupabaseClient {
+    return this._client;
   }
 }

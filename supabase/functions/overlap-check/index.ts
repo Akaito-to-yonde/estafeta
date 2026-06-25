@@ -66,9 +66,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
   let conferenceQuery = getServiceClient
     .from('conference')
-    .select('id, starting, ending')
+    .select('id, start, ending')
     .eq('speaker_id', userId)
-    .lt('starting', ending)
+    .lt('start', ending)
     .gt('ending', start);
 
   if (excludeId) {
@@ -102,7 +102,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
     ...(conferenceRows ?? []).map((row) => ({
       id: String(row.id),
       type: 'conference' as const,
-      start: row.starting as string,
+      start: row.start as string,
       ending: row.ending as string,
     })),
     ...(meetingRows ?? []).map((row) => ({

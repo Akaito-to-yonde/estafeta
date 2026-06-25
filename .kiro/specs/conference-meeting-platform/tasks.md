@@ -14,21 +14,21 @@ to `supabase/functions/`. Angular targets the `src/app/` tree using Angular 21 p
 
 ### Step 1 — Database migrations
 
-- [ ] 1. Write all SQL migrations to `supabase/query.sql`
-  - [ ] 1.1 Add CHECK constraints and enable pg_net extension
+- [x] 1. Write all SQL migrations to `supabase/query.sql`
+  - [x] 1.1 Add CHECK constraints and enable pg_net extension
     - Add `CHECK (categoria IN ('admin','producer','provider','services','client'))` on `profile`
     - Add `CHECK (status IN ('proposed','accepted','rejected','rescheduled','cancelled'))` on `meeting`
     - Run `CREATE EXTENSION IF NOT EXISTS pg_net;`
     - _Requirements: 6.6_
 
-  - [ ] 1.2 Create `notification_log` table
+  - [x] 1.2 Create `notification_log` table
     - Columns: `id uuid PRIMARY KEY DEFAULT gen_random_uuid()`, `created_at timestamptz DEFAULT now()`,
       `function_name text NOT NULL`, `recipient text NOT NULL`, `error text NOT NULL`,
       `meeting_id uuid REFERENCES meeting(id) ON DELETE SET NULL`,
       `profile_id uuid REFERENCES profile(id) ON DELETE SET NULL`
     - _Requirements: 14.5_
 
-  - [ ] 1.3 Create Postgres trigger functions for profile notifications
+  - [x] 1.3 Create Postgres trigger functions for profile notifications
     - `notify_on_new_registration()`: fires `AFTER INSERT ON profile`, calls pg_net HTTP POST to
       `on-new-registration` Edge Function URL with `NEW.id`, `NEW.email`, `NEW.categoria`, `NEW.nombre_empresa`
     - `notify_on_approval_invite()`: fires `AFTER UPDATE OF estado ON profile WHERE NEW.estado = 'approved'`,
@@ -38,7 +38,7 @@ to `supabase/functions/`. Angular targets the `src/app/` tree using Angular 21 p
     - All functions use `perform net.http_post(...)` with the `service_role` key in the Authorization header
     - _Requirements: 1.3, 3.2, 3.4_
 
-  - [ ] 1.4 Create Postgres trigger functions for meeting notifications
+  - [x] 1.4 Create Postgres trigger functions for meeting notifications
     - `notify_on_meeting_proposed()`: fires `AFTER INSERT ON meeting WHERE NEW.status = 'proposed'`
     - `notify_on_meeting_accepted()`: fires `AFTER UPDATE OF status ON meeting WHERE NEW.status = 'accepted'`
     - `notify_on_meeting_rejected()`: fires `AFTER UPDATE OF status ON meeting WHERE NEW.status = 'rejected'`
@@ -47,27 +47,27 @@ to `supabase/functions/`. Angular targets the `src/app/` tree using Angular 21 p
     - Each passes `NEW.id` (meeting id) to the corresponding Edge Function via pg_net HTTP POST
     - _Requirements: 9.4, 11.1–11.6_
 
-  - [ ] 1.5 Attach all trigger functions to their tables
+  - [x] 1.5 Attach all trigger functions to their tables
     - `CREATE TRIGGER trg_new_registration AFTER INSERT ON profile ...`
     - `CREATE TRIGGER trg_approval_invite AFTER UPDATE OF estado ON profile ...`
     - `CREATE TRIGGER trg_rejection AFTER UPDATE OF estado ON profile ...`
     - `CREATE TRIGGER trg_meeting_proposed AFTER INSERT ON meeting ...`
     - `CREATE TRIGGER trg_meeting_accepted/rejected/rescheduled/cancelled AFTER UPDATE OF status ON meeting ...`
     - _Requirements: 1.3, 3.2, 3.4, 9.4, 11.1–11.6_
-  - [ ] 1.6 Enable Supabase Realtime publications
+  - [x] 1.6 Enable Supabase Realtime publications
     - `ALTER PUBLICATION supabase_realtime ADD TABLE profile;`
     - `ALTER PUBLICATION supabase_realtime ADD TABLE conference;`
     - `ALTER PUBLICATION supabase_realtime ADD TABLE meeting;`
     - _Requirements: Design — Supabase Realtime for live data_
 
-  - [ ] 1.7 Confirm / create RLS policies for `profile` table
+  - [x] 1.7 Confirm / create RLS policies for `profile` table
     - SELECT: `user_id = auth.uid()` OR `(auth.jwt()->'app_metadata'->>'categoria') = 'admin'`
     - INSERT: `true` (unauthenticated registration)
     - UPDATE: `user_id = auth.uid()` OR `(auth.jwt()->'app_metadata'->>'categoria') = 'admin'`
     - DELETE: `(auth.jwt()->'app_metadata'->>'categoria') = 'admin'`
     - _Requirements: 6.6_
 
-  - [ ] 1.8 Confirm / create RLS policies for `conference` and `meeting` tables
+  - [x] 1.8 Confirm / create RLS policies for `conference` and `meeting` tables
     - `conference` SELECT: `true` (public)
     - `conference` INSERT: `speaker_id = auth.uid()`
     - `conference` UPDATE: `speaker_id = auth.uid()`
@@ -77,7 +77,7 @@ to `supabase/functions/`. Angular targets the `src/app/` tree using Angular 21 p
     - `meeting` UPDATE: `speaker_id = auth.uid()` OR `participant_id = auth.uid()`
     - _Requirements: 6.6_
 
-- [ ] 2. Checkpoint — Review SQL before applying
+- [x] 2. Checkpoint — Review SQL before applying
   - Ensure all constraints, triggers, realtime publications, and RLS policies are correct.
   - Ask the user if questions arise before proceeding to Edge Functions.
 
@@ -88,8 +88,8 @@ to `supabase/functions/`. Angular targets the `src/app/` tree using Angular 21 p
 All functions are written to `/home/zorrojo/Documentos/estafeta/supabase/functions/` and
 uploaded manually via the Supabase dashboard or CLI.
 
-- [ ] 3. Implement shared `send-email` Edge Function
-  - [ ] 3.1 Create `supabase/functions/send-email/index.ts`
+- [x] 3. Implement shared `send-email` Edge Function
+  - [x] 3.1 Create `supabase/functions/send-email/index.ts`
     - Accept `{ to: string; templateId: string; variables: Record<string, string> }` in the request body
     - Call Resend API (`POST https://api.resend.com/emails`) using the `RESEND_API_KEY` env variable
     - Implement retry loop: up to 3 total attempts, 15-second wait between attempts (`setTimeout` / sleep)
@@ -104,57 +104,57 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Property 24: Notification Retry Lives in Edge Function**
     - **Validates: Requirements 11.7, 14.5**
 
-- [ ] 4. Implement profile notification Edge Functions
-  - [ ] 4.1 Create `supabase/functions/on-new-registration/index.ts`
+- [x] 4. Implement profile notification Edge Functions
+  - [x] 4.1 Create `supabase/functions/on-new-registration/index.ts`
     - Read `profile_id` from request body (passed by pg_net trigger)
     - Fetch the profile row from Supabase using the service-role key
     - Build `SendEmailPayload` with `templateId = 'new-registration'`, variables: `email`, `categoria`, `nombre_empresa`
     - Invoke `send-email` as a Supabase function call (or HTTP invoke)
     - _Requirements: 1.3, 14.1, 14.2_
 
-  - [ ] 4.2 Create `supabase/functions/on-approval-invite/index.ts`
+  - [x] 4.2 Create `supabase/functions/on-approval-invite/index.ts`
     - Fetch profile row by `profile_id` from request body
     - Generate Supabase invite link using admin auth API (`supabase.auth.admin.generateLink`)
     - Call `send-email` with `templateId = 'approval-invite'`, variables: `email`, `inviteLink`
     - _Requirements: 3.2, 3.3, 4.1_
 
-  - [ ] 4.3 Create `supabase/functions/on-rejection/index.ts`
+  - [x] 4.3 Create `supabase/functions/on-rejection/index.ts`
     - Fetch profile row by `profile_id` from request body (trigger fires before delete, so row still exists)
     - Call `send-email` with `templateId = 'rejection'`, variables: `email`, optional `response_note`
     - _Requirements: 3.4, 3.6_
 
-- [ ] 5. Implement meeting notification Edge Functions
-  - [ ] 5.1 Create `supabase/functions/on-meeting-proposed/index.ts`
+- [x] 5. Implement meeting notification Edge Functions
+  - [x] 5.1 Create `supabase/functions/on-meeting-proposed/index.ts`
     - Fetch meeting row + joined profile rows for both `speaker_id` and `participant_id`
     - Resolve host's email as the recipient
     - Call `send-email` with `templateId = 'meeting-proposed'`, variables: `start`, `ending`, `location`,
       `clientEmpresa`, `hostEmpresa`, optional `response_note`
     - _Requirements: 9.4, 14.1, 14.2_
 
-  - [ ] 5.2 Create `supabase/functions/on-meeting-accepted/index.ts`
+  - [x] 5.2 Create `supabase/functions/on-meeting-accepted/index.ts`
     - Determine the other party (not `last_updated_by`) and resolve their email from the joined profile
     - Call `send-email` with `templateId = 'meeting-accepted'`, variables: `start`, `ending`, `location`,
       optional `response_note`
     - _Requirements: 11.1, 11.4_
 
-  - [ ] 5.3 Create `supabase/functions/on-meeting-rejected/index.ts`
+  - [x] 5.3 Create `supabase/functions/on-meeting-rejected/index.ts`
     - Resolve other party's email; call `send-email` with `templateId = 'meeting-rejected'`,
       variables: optional `response_note`
     - _Requirements: 11.2, 11.5_
 
-  - [ ] 5.4 Create `supabase/functions/on-meeting-rescheduled/index.ts`
+  - [x] 5.4 Create `supabase/functions/on-meeting-rescheduled/index.ts`
     - Resolve other party's email; call `send-email` with `templateId = 'meeting-rescheduled'`,
       variables: `start`, `ending`, `location`, optional `response_note`
     - _Requirements: 11.3, 11.6_
 
-  - [ ] 5.5 Create `supabase/functions/on-meeting-cancelled/index.ts`
+  - [x] 5.5 Create `supabase/functions/on-meeting-cancelled/index.ts`
     - Resolve both parties' emails (cancelled by admin/conference conflict — notify both)
     - Call `send-email` twice (once per party) with `templateId = 'meeting-cancelled'`,
       variables: `start`, `ending`
     - _Requirements: 7.11, 11.7_
 
-- [ ] 6. Implement `overlap-check` Edge Function
-  - [ ] 6.1 Create `supabase/functions/overlap-check/index.ts`
+- [x] 6. Implement `overlap-check` Edge Function
+  - [x] 6.1 Create `supabase/functions/overlap-check/index.ts`
     - Accept `OverlapCheckRequest`: `{ start, ending, type, excludeId?, userId }`
     - Query `conference` table for rows where `[start, ending)` overlaps `[NEW.starting, NEW.ending)` and
       `speaker_id = userId` (or all rows for conference-type check), excluding `excludeId`
@@ -170,7 +170,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Property 15: Time-Interval Overlap Detection**
     - **Validates: Requirements 7.10, 9.3, 10.11**
 
-- [ ] 7. Checkpoint — Edge Functions complete
+- [x] 7. Checkpoint — Edge Functions complete
   - Ensure all `supabase/functions/` files are created and ready for manual upload.
   - Ask the user if questions arise.
 

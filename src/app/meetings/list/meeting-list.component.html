@@ -1,0 +1,64 @@
+<section class="meeting-list" aria-labelledby="meeting-list-title">
+  <header class="meeting-list__header">
+    <h1 id="meeting-list-title">{{ i18n.listTitle }}</h1>
+  </header>
+
+  <p-table
+    [value]="visibleMeetings()"
+    [rows]="25"
+    [paginator]="visibleMeetings().length > 25"
+    responsiveLayout="scroll"
+    styleClass="p-datatable-sm"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">Host</th>
+        <th scope="col">Client</th>
+        <th scope="col">{{ i18n.fields.start }}</th>
+        <th scope="col">{{ i18n.fields.ending }}</th>
+        <th scope="col">{{ i18n.fields.status }}</th>
+        <th scope="col">
+          <span class="sr-only">{{ i18n.actionRequired }}</span>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-m>
+      <tr
+        (click)="onRowClick(m)"
+        (keyup.enter)="onRowClick(m)"
+        tabindex="0"
+        [style.cursor]="'pointer'"
+        [attr.aria-label]="'Ver reunión con ' + m.participant.nombre_empresa"
+      >
+        <td>{{ m.speaker.nombre_empresa }}</td>
+        <td>{{ m.participant.nombre_empresa }}</td>
+        <td>{{ m.start | dateFormat: 'd MMM yyyy, HH:mm' }}</td>
+        <td>{{ m.ending | dateFormat: 'd MMM yyyy, HH:mm' }}</td>
+        <td>
+          <span [class]="'meeting-status status-' + m.status">
+            {{ statusLabel(m) }}
+          </span>
+        </td>
+        <td class="meeting-list__action-col">
+          @if (requiresAction(m)) {
+            <span
+              class="meeting-list__action-badge"
+              role="status"
+              [attr.aria-label]="i18n.actionRequired"
+              title="{{ i18n.actionRequired }}"
+            ></span>
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="meeting-list__empty" aria-live="polite">
+          {{ i18n.noResults }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</section>

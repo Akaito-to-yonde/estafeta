@@ -404,8 +404,8 @@ uploaded manually via the Supabase dashboard or CLI.
 
 ### Step 5 — Conference feature
 
-- [ ] 14. Implement conference components
-  - [ ] 14.1 Create `ConferenceListComponent` (`src/app/conferences/list/conference-list.component.ts`)
+- [x] 14. Implement conference components
+  - [x] 14.1 Create `ConferenceListComponent` (`src/app/conferences/list/conference-list.component.ts`)
     - Uses `ConferenceService.upcomingConferences` signal (computed, live via Realtime)
     - Display columns: `subject`, `starting`, `ending`, `location`, `speaker.nombre_empresa`
     - Show edit / delete actions only when `profile.categoria` is `producer|provider|services|admin`
@@ -415,14 +415,14 @@ uploaded manually via the Supabase dashboard or CLI.
     - All text from `ES`; dates via `DateFormatPipe`; `OnPush`
     - _Requirements: 7.7, 8.1–8.3_
 
-  - [ ] 14.2 Create `ConferenceDetailComponent` (`src/app/conferences/detail/conference-detail.component.ts`)
+  - [x] 14.2 Create `ConferenceDetailComponent` (`src/app/conferences/detail/conference-detail.component.ts`)
     - Load conference by route param via `ConferenceService.getConferenceById()`
     - Display all fields: `subject`, `starting`, `ending`, `location`, `speaker.nombre_empresa`,
       `speaker.categoria`, `speaker.contacto`, `speaker.actividad`, `speaker.email`
     - Show "Proponer reunión" CTA only when user is authenticated and `categoria === 'client'`
     - CTA navigates to `/meetings/new?speakerId=...`
     - _Requirements: 8.4, 8.5_
-  - [ ] 14.3 Create `ConferenceFormComponent` (`src/app/conferences/form/conference-form.component.ts`)
+  - [x] 14.3 Create `ConferenceFormComponent` (`src/app/conferences/form/conference-form.component.ts`)
     - Shared create / edit form; reads `:id` param to load existing conference for edit mode
     - `FormGroup`: `starting` (required, future), `ending` (required, must be after `starting`),
       `location` (required, max 255), `subject` (required, max 500)
@@ -450,8 +450,8 @@ uploaded manually via the Supabase dashboard or CLI.
 
 ### Step 6 — Meeting feature
 
-- [ ] 15. Implement meeting components
-  - [ ] 15.1 Create `MeetingListComponent` (`src/app/meetings/list/meeting-list.component.ts`)
+- [x] 15. Implement meeting components
+  - [x] 15.1 Create `MeetingListComponent` (`src/app/meetings/list/meeting-list.component.ts`)
     - Uses `MeetingService.meetingsAsClient` or `meetingsAsHost` depending on `profile.categoria`
     - Admin gets `MeetingService.meetings` (all)
     - Action-required indicator on each row where `actionRequired` is true
@@ -459,7 +459,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - Navigate to `/meetings/:id` on row click
     - Empty state: `ES.meetings.noResults`; error state: `ES.meetings.errors.loadError`
     - _Requirements: 12.1–12.6_
-  - [ ] 15.2 Create `MeetingDetailComponent` (`src/app/meetings/detail/meeting-detail.component.ts`)
+  - [x] 15.2 Create `MeetingDetailComponent` (`src/app/meetings/detail/meeting-detail.component.ts`)
     - Load meeting by route param via `MeetingService.getMeetingById()`
     - Display all fields: `speaker.nombre_empresa`, `participant.nombre_empresa`, `start`, `ending`,
       `status`, `last_updated_by`, `response_note`, `created_at`, `updated_at`
@@ -480,7 +480,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Properties 17, 20**
     - **Validates: Requirements 10.1–10.4, 12.4**
 
-  - [ ] 15.4 Create `MeetingFormComponent` (`src/app/meetings/form/meeting-form.component.ts`)
+  - [x] 15.4 Create `MeetingFormComponent` (`src/app/meetings/form/meeting-form.component.ts`)
     - `authGuard + roleGuard(['client'])`; pre-fills `speaker_id` from query param if coming from
       `ConferenceDetailComponent`
     - `FormGroup`: host selection (dropdown of approved hosts), `start`, `ending`, `location`,

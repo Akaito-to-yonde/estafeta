@@ -1,0 +1,169 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate aria-label="Conference form">
+
+  <!-- Error banner -->
+  @if (errorMessage()) {
+    <div role="alert" class="error-banner">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Overlap error banner (conference conflict) -->
+  @if (overlapError()) {
+    <div role="alert" class="overlap-banner">
+      {{ overlapError() }}
+    </div>
+  }
+
+  <!-- Meeting conflict warning -->
+  @if (meetingConflicts().length > 0) {
+    <div role="alert" class="meeting-conflict-banner">
+      <p>
+        Esta conferencia se solapa con {{ meetingConflicts().length }}
+        reunión(es) existente(s). ¿Qué deseas hacer?
+      </p>
+      <div class="meeting-conflict-actions">
+        <button
+          type="button"
+          pButton
+          severity="danger"
+          [disabled]="isLoading()"
+          (click)="cancelMeetingsAndSave()"
+        >
+          Cancelar reuniones afectadas y guardar
+        </button>
+        <button
+          type="button"
+          pButton
+          severity="secondary"
+          [disabled]="isLoading()"
+          (click)="dismissMeetingConflicts()"
+        >
+          {{ ES.common.back }} y cambiar horario
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Subject -->
+  <div class="field">
+    <label for="subject">{{ ES.conferences.fields.subject }} <span aria-hidden="true">*</span></label>
+    <input
+      id="subject"
+      type="text"
+      pInputText
+      formControlName="subject"
+      [attr.aria-required]="true"
+      [attr.aria-describedby]="
+        form.get('subject')?.invalid && form.get('subject')?.touched
+          ? 'subject-error'
+          : null
+      "
+    />
+    @if (form.get('subject')?.touched) {
+      @if (form.get('subject')?.hasError('required')) {
+        <small id="subject-error" role="alert" class="field-error">{{ ES.common.required }}</small>
+      } @else if (form.get('subject')?.hasError('maxlength')) {
+        <small id="subject-error" role="alert" class="field-error">{{ ES.common.maxLength(500) }}</small>
+      }
+    }
+  </div>
+
+  <!-- Start -->
+  <div class="field">
+    <label for="start">{{ ES.conferences.fields.starting }} <span aria-hidden="true">*</span></label>
+    <input
+      id="start"
+      type="datetime-local"
+      pInputText
+      formControlName="start"
+      [attr.aria-required]="true"
+      [attr.aria-describedby]="
+        (form.get('start')?.invalid && form.get('start')?.touched) || (form.hasError('dateRange') && form.touched)
+          ? 'start-error'
+          : null
+      "
+    />
+    @if (form.get('start')?.touched) {
+      @if (form.get('start')?.hasError('required')) {
+        <small id="start-error" role="alert" class="field-error">{{ ES.common.required }}</small>
+      } @else if (form.get('start')?.hasError('pastDate')) {
+        <small id="start-error" role="alert" class="field-error">{{ ES.common.pastDate }}</small>
+      }
+    }
+  </div>
+
+  <!-- Ending -->
+  <div class="field">
+    <label for="ending">{{ ES.conferences.fields.ending }} <span aria-hidden="true">*</span></label>
+    <input
+      id="ending"
+      type="datetime-local"
+      pInputText
+      formControlName="ending"
+      [attr.aria-required]="true"
+      [attr.aria-describedby]="
+        (form.get('ending')?.invalid && form.get('ending')?.touched) || (form.hasError('dateRange') && form.touched)
+          ? 'ending-error'
+          : null
+      "
+    />
+    @if (form.get('ending')?.touched) {
+      @if (form.get('ending')?.hasError('required')) {
+        <small id="ending-error" role="alert" class="field-error">{{ ES.common.required }}</small>
+      }
+    }
+    @if (form.hasError('dateRange') && (form.get('start')?.touched || form.get('ending')?.touched)) {
+      <small id="ending-error" role="alert" class="field-error">{{ ES.conferences.errors.endBeforeStart }}</small>
+    }
+  </div>
+
+  <!-- Location -->
+  <div class="field">
+    <label for="location">{{ ES.conferences.fields.location }} <span aria-hidden="true">*</span></label>
+    <input
+      id="location"
+      type="text"
+      pInputText
+      formControlName="location"
+      [attr.aria-required]="true"
+      [attr.aria-describedby]="
+        form.get('location')?.invalid && form.get('location')?.touched
+          ? 'location-error'
+          : null
+      "
+    />
+    @if (form.get('location')?.touched) {
+      @if (form.get('location')?.hasError('required')) {
+        <small id="location-error" role="alert" class="field-error">{{ ES.common.required }}</small>
+      } @else if (form.get('location')?.hasError('maxlength')) {
+        <small id="location-error" role="alert" class="field-error">{{ ES.common.maxLength(255) }}</small>
+      }
+    }
+  </div>
+
+  <!-- Actions -->
+  <div class="form-actions">
+    <button
+      type="submit"
+      pButton
+      [disabled]="isLoading()"
+      [attr.aria-busy]="isLoading()"
+    >
+      @if (isLoading()) {
+        {{ ES.common.loading }}
+      } @else {
+        {{ ES.common.save }}
+      }
+    </button>
+    <button
+      type="button"
+      pButton
+      severity="secondary"
+      [disabled]="isLoading()"
+      (click)="goBack()"
+    >
+      {{ ES.common.cancel }}
+    </button>
+  </div>
+
+</form>

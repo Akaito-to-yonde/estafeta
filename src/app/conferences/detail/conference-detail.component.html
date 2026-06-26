@@ -1,0 +1,96 @@
+<article class="conference-detail">
+  @if (loading()) {
+    <p class="conference-detail__loading" role="status" aria-live="polite">{{ ES.common.loading }}</p>
+  } @else if (error() || !conference()) {
+    <p class="conference-detail__error" role="alert">{{ ES.common.error }}</p>
+  } @else {
+    <header class="conference-detail__header">
+      <h1 class="conference-detail__title">{{ ES.conferences.detailTitle }}</h1>
+    </header>
+
+    <section class="conference-detail__body" aria-label="{{ ES.conferences.detailTitle }}">
+      <dl class="conference-detail__fields">
+        <div class="conference-detail__field">
+          <dt class="conference-detail__label">{{ ES.conferences.fields.subject }}</dt>
+          <dd class="conference-detail__value">{{ conference()!.subject }}</dd>
+        </div>
+
+        <div class="conference-detail__field">
+          <dt class="conference-detail__label">{{ ES.conferences.fields.starting }}</dt>
+          <dd class="conference-detail__value">{{ conference()!.start | dateFormat: 'dd/MM/yyyy HH:mm' }}</dd>
+        </div>
+
+        <div class="conference-detail__field">
+          <dt class="conference-detail__label">{{ ES.conferences.fields.ending }}</dt>
+          <dd class="conference-detail__value">{{ conference()!.ending | dateFormat: 'dd/MM/yyyy HH:mm' }}</dd>
+        </div>
+
+        <div class="conference-detail__field">
+          <dt class="conference-detail__label">{{ ES.conferences.fields.location }}</dt>
+          <dd class="conference-detail__value">{{ conference()!.location }}</dd>
+        </div>
+      </dl>
+
+      <section class="conference-detail__speaker" aria-label="{{ ES.conferences.fields.speaker }}">
+        <h2 class="conference-detail__speaker-title">{{ ES.conferences.fields.speaker }}</h2>
+        <dl class="conference-detail__fields">
+          <div class="conference-detail__field">
+            <dt class="conference-detail__label">{{ ES.register.fields.nombreEmpresa }}</dt>
+            <dd class="conference-detail__value">{{ conference()!.speaker.nombre_empresa }}</dd>
+          </div>
+
+          <div class="conference-detail__field">
+            <dt class="conference-detail__label">{{ ES.register.fields.categoria }}</dt>
+            <dd class="conference-detail__value">{{ conference()!.speaker.categoria }}</dd>
+          </div>
+
+          <div class="conference-detail__field">
+            <dt class="conference-detail__label">{{ ES.register.fields.contacto }}</dt>
+            <dd class="conference-detail__value">{{ conference()!.speaker.contacto }}</dd>
+          </div>
+
+          <div class="conference-detail__field">
+            <dt class="conference-detail__label">{{ ES.register.fields.actividad }}</dt>
+            <dd class="conference-detail__value">{{ conference()!.speaker.actividad }}</dd>
+          </div>
+
+          <div class="conference-detail__field">
+            <dt class="conference-detail__label">{{ ES.register.fields.email }}</dt>
+            <dd class="conference-detail__value">
+              <a [href]="'mailto:' + conference()!.speaker.email">{{ conference()!.speaker.email }}</a>
+            </dd>
+          </div>
+        </dl>
+      </section>
+    </section>
+
+    <footer class="conference-detail__actions">
+      <p-button
+        [label]="ES.common.back"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        (onClick)="goBack()"
+        aria-label="{{ ES.common.back }}"
+      />
+
+      @if (canPropose()) {
+        <p-button
+          [label]="ES.conferences.proposeButton"
+          icon="pi pi-calendar-plus"
+          (onClick)="proposeMeeting()"
+          aria-label="{{ ES.conferences.proposeButton }}"
+        />
+      }
+
+      @if (canEdit()) {
+        <p-button
+          [label]="ES.conferences.editButton"
+          icon="pi pi-pencil"
+          severity="secondary"
+          (onClick)="editConference()"
+          aria-label="{{ ES.conferences.editButton }}"
+        />
+      }
+    </footer>
+  }
+</article>

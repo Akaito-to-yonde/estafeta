@@ -1,0 +1,197 @@
+<section class="admin-user-list" aria-labelledby="admin-user-list-title">
+
+  <!-- Header -->
+  <header class="admin-user-list__header">
+    <h1 id="admin-user-list-title">
+      {{ viewMode() === 'pending' ? labels.pendingTitle : labels.usersTitle }}
+    </h1>
+  </header>
+
+  <!-- Filter bar -->
+  <fieldset class="admin-user-list__filters">
+    <legend class="sr-only">Filtros</legend>
+
+    <!-- View mode toggle -->
+    <p-select
+      [options]="viewModeOptions"
+      [value]="selectedViewMode()"
+      (onChange)="onViewModeChange($event.value)"
+      optionLabel="label"
+      optionValue="value"
+      aria-label="Vista"
+    />
+
+    <!-- Estado filter (active only in all mode) -->
+    <p-select
+      [options]="estadoOptions"
+      [value]="selectedEstado()"
+      (onChange)="onEstadoChange($event.value)"
+      optionLabel="label"
+      optionValue="value"
+      [disabled]="viewMode() === 'pending'"
+      [attr.aria-label]="labels.filterEstado"
+    />
+
+    <!-- Categoria filter (active in both modes) -->
+    <p-select
+      [options]="categoriaOptions"
+      [value]="selectedCategoria()"
+      (onChange)="onCategoriaChange($event.value)"
+      optionLabel="label"
+      optionValue="value"
+      [attr.aria-label]="labels.filterCategoria"
+    />
+
+  </fieldset>
+
+  <!-- Error -->
+  @if (errorMessage()) {
+    <div class="admin-user-list__error" role="alert" aria-live="assertive">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Inline action message (approve/reject feedback) -->
+  @if (inlineMessage()) {
+    <output class="admin-user-list__inline-msg" aria-live="polite">
+      {{ inlineMessage() }}
+    </output>
+  }
+
+  <!-- Table -->
+  <p-table
+    [value]="displayedProfiles()"
+    [loading]="isLoading()"
+    responsiveLayout="scroll"
+    styleClass="p-datatable-sm"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">{{ labels.filterEstado }}</th>
+        <th scope="col">Email</th>
+        <th scope="col">Empresa</th>
+        <th scope="col">{{ labels.filterCategoria }}</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Registro</th>
+        <th scope="col"><span class="sr-only">Acciones</span></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-profile>
+      <tr
+        (click)="onRowClick(profile)"
+        [style.cursor]="'pointer'"
+        [attr.aria-label]="'Ver usuario: ' + profile.email"
+        tabindex="0"
+        (keyup.enter)="onRowClick(profile)"
+      >
+        <td>{{ profile.email }}</td>
+        <td>{{ profile.nombre_empresa }}</td>
+        <td>{{ categoriaLabel[profile.categoria] }}</td>
+        <td>{{ estadoLabel[profile.estado] }}</td>
+        <td>{{ profile.created_at | dateFormat: 'd MMM yyyy' }}</td>
+
+        <!-- Actions column -->
+        <td
+          class="admin-user-list__actions"
+          (click)="$event.stopPropagation()"
+          (keydown.enter)="$event.stopPropagation()"
+          (keydown.space)="$event.stopPropagation()"
+        >
+          @if (profile.estado === 'pending') {
+
+            <!-- Inline reject form -->
+            @if (rejectingId() === profile.id) {
+              <fieldset class="admin-user-list__reject-inline">
+                <legend class="sr-only">{{ 'Rechazar: ' + profile.email }}</legend>
+                <label [for]="'reject-note-' + profile.id" class="admin-user-list__reject-label">
+                  {{ labels.rejectNoteLabel }}
+                </label>
+                <input
+                  pInputText
+                  [id]="'reject-note-' + profile.id"
+                  type="text"
+                  [value]="rejectNote()"
+                  (input)="onRejectNoteInput($event)"
+                  [attr.aria-label]="labels.rejectNoteLabel"
+                />
+                <button
+                  pButton
+                  type="button"
+                  [label]="labels.confirm"
+                  severity="danger"
+                  size="small"
+                  (click)="onRejectConfirm($event, profile)"
+                  [attr.aria-label]="'Confirmar rechazo de ' + profile.email"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  [label]="labels.cancel"
+                  severity="secondary"
+                  size="small"
+                  (click)="onRejectCancel($event)"
+                  [attr.aria-label]="labels.cancel"
+                ></button>
+              </fieldset>
+            } @else {
+              <button
+                pButton
+                type="button"
+                [label]="labels.approveButton"
+                severity="success"
+                size="small"
+                (click)="onApprove($event, profile)"
+                [attr.aria-label]="labels.approveButton + ': ' + profile.email"
+              ></button>
+              <button
+                pButton
+                type="button"
+                [label]="labels.rejectButton"
+                severity="danger"
+                size="small"
+                (click)="onRejectStart($event, profile)"
+                [attr.aria-label]="labels.rejectButton + ': ' + profile.email"
+              ></button>
+            }
+
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="admin-user-list__empty" aria-live="polite">
+          {{ isLoading() ? labels.loading : labels.noResults }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Pagination -->
+  <nav class="admin-user-list__pagination" aria-label="Paginación">
+    <button
+      pButton
+      type="button"
+      icon="pi pi-chevron-left"
+      severity="secondary"
+      [disabled]="!hasPrev"
+      (click)="onPagePrev()"
+      aria-label="Página anterior"
+    ></button>
+    <span class="admin-user-list__page-info" aria-live="polite">
+      Página {{ currentPage() }}
+    </span>
+    <button
+      pButton
+      type="button"
+      icon="pi pi-chevron-right"
+      severity="secondary"
+      [disabled]="!hasNext"
+      (click)="onPageNext()"
+      aria-label="Página siguiente"
+    ></button>
+  </nav>
+
+</section>

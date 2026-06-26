@@ -533,14 +533,14 @@ uploaded manually via the Supabase dashboard or CLI.
 
 ### Step 8 — Admin feature
 
-- [ ] 17. Implement admin components
-  - [ ] 17.1 Create `AdminShellComponent` (`src/app/admin/admin-shell.component.ts`)
+- [x] 17. Implement admin components
+  - [x] 17.1 Create `AdminShellComponent` (`src/app/admin/admin-shell.component.ts`)
     - Layout wrapper with sidebar navigation to `/admin/users`
     - `authGuard + roleGuard(['admin'])`
     - Uses `router-outlet` for child routes
     - _Requirements: 3.1, 6.3_
 
-  - [ ] 17.2 Create `AdminUserListComponent` (`src/app/admin/users/admin-user-list.component.ts`)
+  - [x] 17.2 Create `AdminUserListComponent` (`src/app/admin/users/admin-user-list.component.ts`)
     - Single fused list handling both pending-review and all-users views
     - Default filter: `{ estado: 'pending' }`; filter bar to switch to all users or filter by `categoria`
     - Uses `ProfileService.pendingProfiles` (live signal) for pending view and `ProfileService.allProfiles`
@@ -559,7 +559,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Properties 27, 39**
     - **Validates: Requirements 13.2, Design — Fused admin user list**
 
-  - [ ] 17.4 Create `AdminUserDetailComponent` (`src/app/admin/users/admin-user-detail.component.ts`)
+  - [x] 17.4 Create `AdminUserDetailComponent` (`src/app/admin/users/admin-user-detail.component.ts`)
     - Load profile by route param via `ProfileService.getProfile()`
     - Display all 13 fields as per Requirement 13.3
     - Show Approve / Reject actions if `estado === 'pending'`

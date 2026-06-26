@@ -1,0 +1,162 @@
+<div class="admin-user-detail">
+  <button
+    pButton
+    type="button"
+    [label]="ES.common.back"
+    icon="pi pi-arrow-left"
+    class="p-button-text mb-4"
+    (click)="goBack()"
+  ></button>
+
+  @if (isLoading()) {
+    <p class="loading-message">{{ ES.common.loading }}</p>
+  } @else if (errorMessage()) {
+    <p class="error-message" role="alert">{{ errorMessage() }}</p>
+  } @else if (profile()) {
+    <dl class="profile-fields">
+      <div class="field-row">
+        <dt>{{ ES.register.fields.email }}</dt>
+        <dd>{{ profile()!.email }}</dd>
+      </div>
+
+      <div class="field-row">
+        <dt>{{ ES.register.fields.categoria }}</dt>
+        <dd>{{ getCategoriaLabel(profile()!.categoria) }}</dd>
+      </div>
+
+      <div class="field-row">
+        <dt>Estado</dt>
+        <dd>
+          <span
+            class="estado-badge"
+            [class.estado-pending]="profile()!.estado === 'pending'"
+            [class.estado-approved]="profile()!.estado === 'approved'"
+            [class.estado-rejected]="profile()!.estado === 'rejected'"
+            [class.estado-registered]="profile()!.estado === 'registered'"
+          >
+            {{ getEstadoLabel(profile()!.estado) }}
+          </span>
+        </dd>
+      </div>
+
+      <div class="field-row">
+        <dt>{{ ES.register.fields.nombreEmpresa }}</dt>
+        <dd>{{ profile()!.nombre_empresa }}</dd>
+      </div>
+
+      <div class="field-row">
+        <dt>{{ ES.register.fields.direccionLegal }}</dt>
+        <dd>{{ profile()!.direccion_legal }}</dd>
+      </div>
+
+      <div class="field-row">
+        <dt>{{ ES.register.fields.contacto }}</dt>
+        <dd>{{ profile()!.contacto }}</dd>
+      </div>
+
+      @if (profile()!.num_fijo) {
+        <div class="field-row">
+          <dt>{{ ES.register.fields.numFijo }}</dt>
+          <dd>{{ profile()!.num_fijo }}</dd>
+        </div>
+      }
+
+      @if (profile()!.num_movil) {
+        <div class="field-row">
+          <dt>{{ ES.register.fields.numMovil }}</dt>
+          <dd>{{ profile()!.num_movil }}</dd>
+        </div>
+      }
+
+      @if (profile()!.actividad) {
+        <div class="field-row">
+          <dt>{{ ES.register.fields.actividad }}</dt>
+          <dd>{{ profile()!.actividad }}</dd>
+        </div>
+      }
+
+      @if (profile()!.oferta_busqueda) {
+        <div class="field-row">
+          <dt>{{ ES.register.fields.ofertaBusqueda }}</dt>
+          <dd>{{ profile()!.oferta_busqueda }}</dd>
+        </div>
+      }
+
+      <div class="field-row">
+        <dt>Creado</dt>
+        <dd>{{ profile()!.created_at | dateFormat: 'dd/MM/yyyy HH:mm' }}</dd>
+      </div>
+
+      <div class="field-row">
+        <dt>Actualizado</dt>
+        <dd>{{ profile()!.updated_at | dateFormat: 'dd/MM/yyyy HH:mm' }}</dd>
+      </div>
+
+      <div class="field-row">
+        <dt>User ID</dt>
+        <dd>{{ profile()!.user_id }}</dd>
+      </div>
+    </dl>
+
+    @if (actionMessage()) {
+      <p class="action-message" role="alert">{{ actionMessage() }}</p>
+    }
+
+    @if (profile()!.estado === 'pending') {
+      <div class="actions">
+        @if (!showRejectInput()) {
+          <button
+            pButton
+            type="button"
+            [label]="ES.admin.approveButton"
+            icon="pi pi-check"
+            class="p-button-success"
+            [disabled]="isActing()"
+            (click)="approve()"
+          ></button>
+
+          <button
+            pButton
+            type="button"
+            [label]="ES.admin.rejectButton"
+            icon="pi pi-times"
+            class="p-button-danger p-button-outlined"
+            [disabled]="isActing()"
+            (click)="startReject()"
+          ></button>
+        } @else {
+          <div class="reject-form">
+            <label for="rejectNote">{{ ES.admin.rejectNoteLabel }}</label>
+            <input
+              id="rejectNote"
+              pInputText
+              type="text"
+              [formControl]="rejectNote"
+              [placeholder]="ES.admin.rejectNoteLabel"
+              class="reject-input"
+            />
+            <div class="reject-actions">
+              <button
+                pButton
+                type="button"
+                [label]="ES.admin.rejectButton"
+                icon="pi pi-times"
+                class="p-button-danger"
+                [disabled]="isActing()"
+                (click)="confirmReject()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                [label]="ES.common.cancel"
+                class="p-button-text"
+                [disabled]="isActing()"
+                (click)="cancelReject()"
+              ></button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

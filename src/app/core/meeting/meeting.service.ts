@@ -1,4 +1,4 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { SupabaseService } from '../../supabase.service';
 import { Meeting, MeetingWithParties, ProposeMeetingDto, RescheduleMeetingDto } from '../models/meeting.model';
@@ -12,6 +12,7 @@ const MEETING_SELECT =
 @Injectable({ providedIn: 'root' })
 export class MeetingService {
   private readonly supabase = inject(SupabaseService);
+  private readonly destroyRef = inject(DestroyRef);
   private channels: RealtimeChannel[] = [];
 
   readonly meetings = signal<MeetingWithParties[]>([]);
@@ -32,6 +33,10 @@ export class MeetingService {
         m.last_updated_by !== this.currentUserId()
     ).length
   );
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.unsubscribeRealtime());
+  }
 
   async getMeetingById(id: string): Promise<MeetingWithParties | null> {
     const { data } = await this.supabase.client

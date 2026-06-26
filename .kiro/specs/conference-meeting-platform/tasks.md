@@ -574,8 +574,8 @@ uploaded manually via the Supabase dashboard or CLI.
 
 ### Step 9 — Realtime subscriptions
 
-- [ ] 18. Wire Realtime subscriptions in all data services
-  - [ ] 18.1 Complete `ProfileService.subscribeRealtime()` and `unsubscribeRealtime()`
+- [x] 18. Wire Realtime subscriptions in all data services
+  - [x] 18.1 Complete `ProfileService.subscribeRealtime()` and `unsubscribeRealtime()`
     - Subscribe to `postgres_changes` on `public.profile` channel
     - On INSERT: append to `allProfiles`; if `estado = 'pending'` also append to `pendingProfiles`
     - On UPDATE: patch both signals in-place by `id`
@@ -583,13 +583,13 @@ uploaded manually via the Supabase dashboard or CLI.
     - Tear down via Angular `DestroyRef`
     - _Requirements: Design — Supabase Realtime_
 
-  - [ ] 18.2 Complete `ConferenceService.subscribeRealtime()` and `unsubscribeRealtime()`
+  - [x] 18.2 Complete `ConferenceService.subscribeRealtime()` and `unsubscribeRealtime()`
     - Subscribe to `postgres_changes` on `public.conference` channel (unfiltered — public)
     - On INSERT / UPDATE / DELETE: patch `conferences` signal
     - Tear down via `DestroyRef`
     - _Requirements: Design — Supabase Realtime_
 
-  - [ ] 18.3 Complete `MeetingService.subscribeRealtime()` and `unsubscribeRealtime()`
+  - [x] 18.3 Complete `MeetingService.subscribeRealtime()` and `unsubscribeRealtime()`
     - Subscribe to two filtered channels: `speaker_id=eq.{uid}` and `participant_id=eq.{uid}`
     - Admin context: unfiltered channel for all meetings
     - Merge events from both channels into the `meetings` signal (dedup by `id`)
@@ -601,7 +601,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Properties 32, 33, 34**
     - **Validates: Design — Supabase Realtime**
 
-- [ ] 19. Checkpoint — All Realtime subscriptions wired
+- [x] 19. Checkpoint — All Realtime subscriptions wired
   - Ensure all tests pass. Ask the user if questions arise.
 
 ---

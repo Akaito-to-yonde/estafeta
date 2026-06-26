@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, DestroyRef, inject, Injectable, Signal, signal } from '@angular/core';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { SupabaseService } from '../../supabase.service';
 import {
@@ -15,6 +15,7 @@ const SPEAKER_SELECT = '*, speaker:profile(nombre_empresa,categoria,contacto,act
 @Injectable({ providedIn: 'root' })
 export class ConferenceService {
   private readonly supabase = inject(SupabaseService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly _conferences = signal<ConferenceWithSpeaker[]>([]);
   private channel: RealtimeChannel | null = null;
@@ -30,6 +31,7 @@ export class ConferenceService {
   constructor() {
     this.getAllConferences(1);
     this.subscribeRealtime();
+    this.destroyRef.onDestroy(() => this.unsubscribeRealtime());
   }
 
   async getConferenceById(id: string): Promise<ConferenceWithSpeaker | null> {

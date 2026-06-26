@@ -1,4 +1,4 @@
-import { Injectable, Signal, inject, signal } from '@angular/core';
+import { DestroyRef, Injectable, Signal, inject, signal } from '@angular/core';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { SupabaseService } from '../../supabase.service';
 import {
@@ -15,6 +15,7 @@ const ALL_PAGE_SIZE = 25;
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
   private readonly supabase = inject(SupabaseService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly _pendingProfiles = signal<Profile[]>([]);
   private readonly _allProfiles = signal<Profile[]>([]);
@@ -26,6 +27,7 @@ export class ProfileService {
 
   constructor() {
     this.subscribeRealtime();
+    this.destroyRef.onDestroy(() => this.unsubscribeRealtime());
   }
 
   async createProfile(

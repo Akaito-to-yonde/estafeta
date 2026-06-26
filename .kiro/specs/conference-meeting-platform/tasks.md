@@ -608,26 +608,26 @@ uploaded manually via the Supabase dashboard or CLI.
 
 ### Step 10 — Testing
 
-- [ ] 20. Install fast-check and write remaining property-based tests
-  - [ ] 20.1 Install `fast-check` dev dependency
+- [x] 20. Install fast-check and write remaining property-based tests
+  - [x] 20.1 Install `fast-check` dev dependency
     - Run `npm install --save-dev fast-check`
     - Verify import in a sample spec file
     - _Requirements: Design — Property-Based Testing Setup_
 
-  - [ ]\* 20.2 Write property tests for `ProfileService` filter and admin
+  - [x]\* 20.2 Write property tests for `ProfileService` filter and admin
     - `getAllProfiles` with arbitrary `ProfileFilters`: result satisfies both filter conditions when active
     - `pendingProfiles` computed: all items have `estado = 'pending'`
     - **Properties 27, 39**
     - **Validates: Requirements 13.1, 13.2**
 
-  - [ ]\* 20.3 Write property tests for post-login redirect behaviour
+  - [x]\* 20.3 Write property tests for post-login redirect behaviour
     - For any `targetUrl` stored before login, router navigates to exactly `targetUrl` after login
     - Stored URL is discarded after first use
     - Role-forbidden URL is never stored in `RedirectService`
     - **Properties 30, 31**
     - **Validates: Requirements 15.3, 15.4**
 
-  - [ ]\* 20.4 Write integration tests for backend trigger chain (mocked at HTTP level)
+  - [x]\* 20.4 Write integration tests for backend trigger chain (mocked at HTTP level)
     - Registration → `createProfile()` → assert pg trigger fires (mock pg_net call observed)
     - Admin approval → `approveProfile()` → assert `on-approval-invite` trigger fired
     - Meeting proposal → `proposeMeeting()` → assert `on-meeting-proposed` trigger fired
@@ -635,7 +635,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Properties 6, 8, 19**
     - **Validates: Requirements 1.3, 3.2, 9.4\_**
 
-  - [ ]\* 20.5 Write accessibility tests for all components
+  - [x]\* 20.5 Write accessibility tests for all components
     - Use `axe-core` via `@axe-core/angular` in Vitest `jsdom` environment
     - Covers: `LoginComponent`, `RegisterComponent`, `SetPasswordComponent`,
       `ConferenceListComponent`, `ConferenceFormComponent`, `MeetingListComponent`,

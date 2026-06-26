@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
@@ -31,7 +32,7 @@ interface SelectOption<T extends string> {
   selector: 'app-admin-user-list',
   templateUrl: './admin-user-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ButtonModule, InputTextModule, SelectModule, TableModule, DateFormatPipe],
+  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, SelectModule, TableModule, DateFormatPipe],
 })
 export class AdminUserListComponent implements OnInit {
   private readonly profileService = inject(ProfileService);
@@ -97,26 +98,32 @@ export class AdminUserListComponent implements OnInit {
     { label: ES.register.categorias.client, value: 'client' },
   ];
 
-  // Selected filter values bound to dropdowns
-  readonly selectedViewMode = signal<'pending' | 'all'>('pending');
-  readonly selectedEstado = signal<ProfileEstado | ''>('pending');
-  readonly selectedCategoria = signal<UserCategoria | ''>('');
+  // FormControls for the filter selects (reactive binding for p-select)
+  readonly viewModeControl = new FormControl<'pending' | 'all'>('pending', { nonNullable: true });
+  readonly estadoControl = new FormControl<ProfileEstado | ''>('pending', { nonNullable: true });
+  readonly categoriaControl = new FormControl<UserCategoria | ''>('', { nonNullable: true });
 
-  // Label helpers for template
-  protected readonly categoriaLabel: Record<UserCategoria, string> = {
-    admin: 'Admin',
-    producer: ES.register.categorias.producer,
-    provider: ES.register.categorias.provider,
-    services: ES.register.categorias.services,
-    client: ES.register.categorias.client,
-  };
+  // Label lookup helpers (accept string to avoid strict-template indexing errors)
+  protected getCategoriaLabel(categoria: string): string {
+    const map: Record<string, string> = {
+      admin: 'Admin',
+      producer: ES.register.categorias.producer,
+      provider: ES.register.categorias.provider,
+      services: ES.register.categorias.services,
+      client: ES.register.categorias.client,
+    };
+    return map[categoria] ?? categoria;
+  }
 
-  protected readonly estadoLabel: Record<ProfileEstado, string> = {
-    pending: ES.admin.estados.pending,
-    approved: ES.admin.estados.approved,
-    rejected: ES.admin.estados.rejected,
-    registered: ES.admin.estados.registered,
-  };
+  protected getEstadoLabel(estado: string): string {
+    const map: Record<string, string> = {
+      pending: ES.admin.estados.pending,
+      approved: ES.admin.estados.approved,
+      rejected: ES.admin.estados.rejected,
+      registered: ES.admin.estados.registered,
+    };
+    return map[estado] ?? estado;
+  }
 
   async ngOnInit(): Promise<void> {
     this.isLoading.set(true);
@@ -138,21 +145,21 @@ export class AdminUserListComponent implements OnInit {
 
   protected async onViewModeChange(value: 'pending' | 'all'): Promise<void> {
     this.viewMode.set(value);
-    this.selectedViewMode.set(value);
+    this.viewModeControl.setValue(value, { emitEvent: false });
     this.currentPage.set(1);
     this.inlineMessage.set(null);
     await this.reload();
   }
 
   protected async onEstadoChange(value: ProfileEstado | ''): Promise<void> {
-    this.selectedEstado.set(value);
+    this.estadoControl.setValue(value, { emitEvent: false });
     this.filters.update((f) => ({ ...f, estado: value || undefined }));
     this.currentPage.set(1);
     await this.reload();
   }
 
   protected async onCategoriaChange(value: UserCategoria | ''): Promise<void> {
-    this.selectedCategoria.set(value);
+    this.categoriaControl.setValue(value, { emitEvent: false });
     this.filters.update((f) => ({ ...f, categoria: value || undefined }));
     this.currentPage.set(1);
     await this.reload();

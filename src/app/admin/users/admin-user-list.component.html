@@ -14,7 +14,7 @@
     <!-- View mode toggle -->
     <p-select
       [options]="viewModeOptions"
-      [value]="selectedViewMode()"
+      [formControl]="viewModeControl"
       (onChange)="onViewModeChange($event.value)"
       optionLabel="label"
       optionValue="value"
@@ -24,7 +24,7 @@
     <!-- Estado filter (active only in all mode) -->
     <p-select
       [options]="estadoOptions"
-      [value]="selectedEstado()"
+      [formControl]="estadoControl"
       (onChange)="onEstadoChange($event.value)"
       optionLabel="label"
       optionValue="value"
@@ -35,7 +35,7 @@
     <!-- Categoria filter (active in both modes) -->
     <p-select
       [options]="categoriaOptions"
-      [value]="selectedCategoria()"
+      [formControl]="categoriaControl"
       (onChange)="onCategoriaChange($event.value)"
       optionLabel="label"
       optionValue="value"
@@ -87,8 +87,8 @@
       >
         <td>{{ profile.email }}</td>
         <td>{{ profile.nombre_empresa }}</td>
-        <td>{{ categoriaLabel[profile.categoria] }}</td>
-        <td>{{ estadoLabel[profile.estado] }}</td>
+        <td>{{ getCategoriaLabel(profile.categoria) }}</td>
+        <td>{{ getEstadoLabel(profile.estado) }}</td>
         <td>{{ profile.created_at | dateFormat: 'd MMM yyyy' }}</td>
 
         <!-- Actions column -->
@@ -176,7 +176,7 @@
       type="button"
       icon="pi pi-chevron-left"
       severity="secondary"
-      [disabled]="!hasPrev"
+      [disabled]="!hasPrev()"
       (click)="onPagePrev()"
       aria-label="Página anterior"
     ></button>
@@ -188,7 +188,7 @@
       type="button"
       icon="pi pi-chevron-right"
       severity="secondary"
-      [disabled]="!hasNext"
+      [disabled]="!hasNext()"
       (click)="onPageNext()"
       aria-label="Página siguiente"
     ></button>

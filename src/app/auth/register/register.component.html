@@ -76,6 +76,7 @@
           id="nombre_empresa"
           type="text"
           pInputText
+          autocomplete="organization"
           formControlName="nombre_empresa"
           [attr.aria-describedby]="
             (form.controls.nombre_empresa.touched && form.controls.nombre_empresa.invalid)
@@ -104,6 +105,7 @@
           id="direccion_legal"
           type="text"
           pInputText
+          autocomplete="address-line1"
           formControlName="direccion_legal"
           [attr.aria-describedby]="
             (form.controls.direccion_legal.touched && form.controls.direccion_legal.invalid)
@@ -132,6 +134,7 @@
           id="contacto"
           type="text"
           pInputText
+          autocomplete="name"
           formControlName="contacto"
           [attr.aria-describedby]="
             (form.controls.contacto.touched && form.controls.contacto.invalid)
@@ -186,7 +189,7 @@
           type="tel"
           pInputText
           formControlName="num_movil"
-          autocomplete="tel-mobile"
+          autocomplete="tel"
           [attr.aria-describedby]="
             (form.controls.num_movil.touched && form.controls.num_movil.invalid)
               ? 'num-movil-error'

@@ -1,0 +1,7 @@
+<div class="calendar-wrapper" style="padding: 1.5rem;">
+  @if (isLoading()) {
+    <p>{{ ES.common.loading }}</p>
+  } @else {
+    <full-calendar [options]="calendarOptions()" />
+  }
+</div>

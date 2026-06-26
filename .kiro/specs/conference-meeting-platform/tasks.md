@@ -502,8 +502,8 @@ uploaded manually via the Supabase dashboard or CLI.
 
 ### Step 7 — Calendar feature
 
-- [ ] 16. Implement `CalendarComponent` (`src/app/calendar/calendar.component.ts`)
-  - [ ] 16.1 Build calendar event mapping logic
+- [x] 16. Implement `CalendarComponent` (`src/app/calendar/calendar.component.ts`)
+  - [x] 16.1 Build calendar event mapping logic
     - Map `ConferenceWithSpeaker[]` → `CalendarEvent[]` with `color = 'blue'`, `type = 'conference'`
     - Map `MeetingWithParties[]` (user-relevant only) → `CalendarEvent[]` with colour from status:
       - `'accepted'` → `'green'`
@@ -521,7 +521,7 @@ uploaded manually via the Supabase dashboard or CLI.
     - **Properties 37, 38**
     - **Validates: Design — CalendarComponent as home view**
 
-  - [ ] 16.3 Wire `CalendarComponent` with PrimeNG `p-fullCalendar`
+  - [x] 16.3 Wire `CalendarComponent` with `@fullcalendar/angular`
     - Install / import `@fullcalendar/core` and required plugins via PrimeNG `FullCalendarModule`
     - Pass computed `calendarEvents` signal as `[events]` input
     - On event click: navigate to `/conferences/:id` or `/meetings/:id` via `sourceId`

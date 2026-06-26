@@ -52,14 +52,14 @@
           <dt class="text-xs font-medium text-surface-500 uppercase tracking-wide">
             {{ ES.conferences.fields.speaker }}
           </dt>
-          <dd class="mt-1 text-sm text-surface-900">{{ m.speaker?.nombre_empresa ?? '—' }}</dd>
+          <dd class="mt-1 text-sm text-surface-900">{{ m.speaker.nombre_empresa }}</dd>
         </div>
 
         <div>
           <dt class="text-xs font-medium text-surface-500 uppercase tracking-wide">
             {{ ES.register.fields.nombreEmpresa }}
           </dt>
-          <dd class="mt-1 text-sm text-surface-900">{{ m.participant?.nombre_empresa ?? '—' }}</dd>
+          <dd class="mt-1 text-sm text-surface-900">{{ m.participant.nombre_empresa }}</dd>
         </div>
 
         <div>

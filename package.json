@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "npm run build && wrangler deploy",
+    "preview": "npm run build && wrangler dev"
   },
   "private": true,
   "packageManager": "npm@11.13.0",
@@ -45,6 +47,7 @@
     "supabase": "^2.107.0",
     "tailwindcss": "^4.1.12",
     "typescript": "~5.9.2",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.8",
+    "wrangler": "^4.105.0"
   }
 }

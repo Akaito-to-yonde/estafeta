@@ -6,7 +6,7 @@
     "enabled": true
   },
   "assets": {
-    "directory": "dist/"
+    "directory": "dist/estafeta/browser/"
   },
   "compatibility_flags": [
     "nodejs_compat"

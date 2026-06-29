@@ -1,64 +1,81 @@
-<section class="meeting-list" aria-labelledby="meeting-list-title">
-  <header class="meeting-list__header">
-    <h1 id="meeting-list-title">{{ i18n.listTitle }}</h1>
-  </header>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex items-center justify-between mb-6">
+    <h1 id="meeting-list-title" class="text-2xl sm:text-3xl font-bold text-slate-900">
+      {{ i18n.listTitle }}
+    </h1>
+  </div>
 
-  <p-table
-    [value]="visibleMeetings()"
-    [rows]="25"
-    [paginator]="visibleMeetings().length > 25"
-    responsiveLayout="scroll"
-    styleClass="p-datatable-sm"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th scope="col">Host</th>
-        <th scope="col">Client</th>
-        <th scope="col">{{ i18n.fields.start }}</th>
-        <th scope="col">{{ i18n.fields.ending }}</th>
-        <th scope="col">{{ i18n.fields.status }}</th>
-        <th scope="col">
-          <span class="sr-only">{{ i18n.actionRequired }}</span>
-        </th>
-      </tr>
-    </ng-template>
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <p-table
+      [value]="visibleMeetings()"
+      [rows]="25"
+      [paginator]="visibleMeetings().length > 25"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr class="bg-slate-50 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+          <th scope="col" class="px-4 py-3 text-left">Host</th>
+          <th scope="col" class="px-4 py-3 text-left">Cliente</th>
+          <th scope="col" class="px-4 py-3 text-left">{{ i18n.fields.start }}</th>
+          <th scope="col" class="px-4 py-3 text-left">{{ i18n.fields.ending }}</th>
+          <th scope="col" class="px-4 py-3 text-left">{{ i18n.fields.status }}</th>
+          <th scope="col" class="px-4 py-3">
+            <span class="sr-only">{{ i18n.actionRequired }}</span>
+          </th>
+        </tr>
+      </ng-template>
 
-    <ng-template pTemplate="body" let-m>
-      <tr
-        (click)="onRowClick(m)"
-        (keyup.enter)="onRowClick(m)"
-        tabindex="0"
-        [style.cursor]="'pointer'"
-        [attr.aria-label]="'Ver reunión con ' + m.participant.nombre_empresa"
-      >
-        <td>{{ m.speaker.nombre_empresa }}</td>
-        <td>{{ m.participant.nombre_empresa }}</td>
-        <td>{{ m.start | dateFormat: 'd MMM yyyy, HH:mm' }}</td>
-        <td>{{ m.ending | dateFormat: 'd MMM yyyy, HH:mm' }}</td>
-        <td>
-          <span [class]="'meeting-status status-' + m.status">
-            {{ statusLabel(m) }}
-          </span>
-        </td>
-        <td class="meeting-list__action-col">
-          @if (requiresAction(m)) {
+      <ng-template pTemplate="body" let-m>
+        <tr
+          (click)="onRowClick(m)"
+          (keyup.enter)="onRowClick(m)"
+          tabindex="0"
+          [style.cursor]="'pointer'"
+          [attr.aria-label]="'Ver reunión con ' + m.participant.nombre_empresa"
+        >
+          <td class="font-medium text-slate-900">{{ m.speaker.nombre_empresa }}</td>
+          <td class="text-slate-600">{{ m.participant.nombre_empresa }}</td>
+          <td class="text-slate-600">{{ m.start | dateFormat: 'd MMM yyyy, HH:mm' }}</td>
+          <td class="text-slate-600">{{ m.ending | dateFormat: 'd MMM yyyy, HH:mm' }}</td>
+          <td>
             <span
-              class="meeting-list__action-badge"
-              role="status"
-              [attr.aria-label]="i18n.actionRequired"
-              title="{{ i18n.actionRequired }}"
-            ></span>
-          }
-        </td>
-      </tr>
-    </ng-template>
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+              [class.bg-yellow-100]="m.status === 'proposed'"
+              [class.text-yellow-800]="m.status === 'proposed'"
+              [class.bg-blue-100]="m.status === 'rescheduled'"
+              [class.text-blue-800]="m.status === 'rescheduled'"
+              [class.bg-green-100]="m.status === 'accepted'"
+              [class.text-green-800]="m.status === 'accepted'"
+              [class.bg-red-100]="m.status === 'rejected'"
+              [class.text-red-800]="m.status === 'rejected'"
+              [class.bg-slate-100]="m.status === 'cancelled'"
+              [class.text-slate-600]="m.status === 'cancelled'"
+              [attr.aria-label]="i18n.fields.status + ': ' + statusLabel(m)"
+            >
+              {{ statusLabel(m) }}
+            </span>
+          </td>
+          <td class="text-center">
+            @if (requiresAction(m)) {
+              <span
+                class="inline-block w-2 h-2 rounded-full bg-brand-500"
+                role="status"
+                [attr.aria-label]="i18n.actionRequired"
+                [title]="i18n.actionRequired"
+              ></span>
+            }
+          </td>
+        </tr>
+      </ng-template>
 
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="6" class="meeting-list__empty" aria-live="polite">
-          {{ i18n.noResults }}
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-</section>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center text-slate-400 py-12" aria-live="polite">
+            {{ i18n.noResults }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

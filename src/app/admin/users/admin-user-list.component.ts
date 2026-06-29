@@ -32,7 +32,14 @@ interface SelectOption<T extends string> {
   selector: 'app-admin-user-list',
   templateUrl: './admin-user-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, SelectModule, TableModule, DateFormatPipe],
+  imports: [
+    ButtonModule,
+    InputTextModule,
+    ReactiveFormsModule,
+    SelectModule,
+    TableModule,
+    DateFormatPipe,
+  ],
 })
 export class AdminUserListComponent implements OnInit {
   private readonly profileService = inject(ProfileService);
@@ -133,9 +140,7 @@ export class AdminUserListComponent implements OnInit {
         this.profileService.getPendingProfiles(1),
         this.profileService.getAllProfiles(1, {}),
       ]);
-      this.totalCount.set(
-        this.viewMode() === 'pending' ? pendingResult.count : allResult.count,
-      );
+      this.totalCount.set(this.viewMode() === 'pending' ? pendingResult.count : allResult.count);
     } catch {
       this.errorMessage.set(ES.common.error);
     } finally {
@@ -229,15 +234,10 @@ export class AdminUserListComponent implements OnInit {
     this.errorMessage.set(null);
     try {
       if (this.viewMode() === 'pending') {
-        const result = await this.profileService.getPendingProfiles(
-          this.currentPage(),
-        );
+        const result = await this.profileService.getPendingProfiles(this.currentPage());
         this.totalCount.set(result.count);
       } else {
-        const result = await this.profileService.getAllProfiles(
-          this.currentPage(),
-          this.filters(),
-        );
+        const result = await this.profileService.getAllProfiles(this.currentPage(), this.filters());
         this.totalCount.set(result.count);
       }
     } catch {

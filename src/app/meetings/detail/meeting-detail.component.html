@@ -1,315 +1,337 @@
-@if (loading()) {
-  <div class="flex justify-center items-center p-8" role="status" aria-live="polite">
-    <span class="text-surface-500">{{ ES.common.loading }}</span>
-  </div>
-} @else if (error()) {
-  <div class="p-4" role="alert" aria-live="assertive">
-    <p class="text-red-600">{{ error() }}</p>
-    <button
-      type="button"
-      class="p-button p-button-outlined mt-4"
-      (click)="goBack()"
-    >
-      {{ ES.common.back }}
-    </button>
-  </div>
-} @else if (meeting(); as m) {
-  <div class="max-w-2xl mx-auto p-6 flex flex-col gap-6">
-
-    <!-- Header -->
-    <div class="flex items-center gap-4">
-      <button
-        type="button"
-        class="p-button p-button-text p-button-sm"
-        (click)="goBack()"
-        aria-label="{{ ES.common.back }}"
-      >
-        ← {{ ES.common.back }}
-      </button>
-      <h1 class="text-2xl font-semibold flex-1">{{ ES.meetings.fields.status }}</h1>
-      <span
-        class="px-3 py-1 rounded-full text-sm font-medium"
-        [class.bg-yellow-100]="m.status === 'proposed'"
-        [class.text-yellow-800]="m.status === 'proposed'"
-        [class.bg-blue-100]="m.status === 'rescheduled'"
-        [class.text-blue-800]="m.status === 'rescheduled'"
-        [class.bg-green-100]="m.status === 'accepted'"
-        [class.text-green-800]="m.status === 'accepted'"
-        [class.bg-red-100]="m.status === 'rejected'"
-        [class.text-red-800]="m.status === 'rejected'"
-        [class.bg-surface-200]="m.status === 'cancelled'"
-        [class.text-surface-600]="m.status === 'cancelled'"
-        aria-label="{{ ES.meetings.fields.status }}: {{ ES.meetings.statuses[m.status] }}"
-      >
-        {{ ES.meetings.statuses[m.status] }}
-      </span>
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  @if (loading()) {
+    <div class="flex justify-center items-center p-8" role="status" aria-live="polite">
+      <span class="text-slate-500">{{ ES.common.loading }}</span>
     </div>
-
-    <!-- Meeting Info -->
-    <section class="border border-surface-200 rounded-xl p-5 flex flex-col gap-4" aria-label="Meeting details">
-      <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-        <div>
-          <dt class="text-xs font-medium text-surface-500 uppercase tracking-wide">
-            {{ ES.conferences.fields.speaker }}
-          </dt>
-          <dd class="mt-1 text-sm text-surface-900">{{ m.speaker.nombre_empresa }}</dd>
-        </div>
-
-        <div>
-          <dt class="text-xs font-medium text-surface-500 uppercase tracking-wide">
-            {{ ES.register.fields.nombreEmpresa }}
-          </dt>
-          <dd class="mt-1 text-sm text-surface-900">{{ m.participant.nombre_empresa }}</dd>
-        </div>
-
-        <div>
-          <dt class="text-xs font-medium text-surface-500 uppercase tracking-wide">
-            {{ ES.meetings.fields.start }}
-          </dt>
-          <dd class="mt-1 text-sm text-surface-900">
-            {{ m.start | dateFormat: "d 'de' MMMM yyyy, HH:mm" }}
-          </dd>
-        </div>
-
-        <div>
-          <dt class="text-xs font-medium text-surface-500 uppercase tracking-wide">
-            {{ ES.meetings.fields.ending }}
-          </dt>
-          <dd class="mt-1 text-sm text-surface-900">
-            {{ m.ending | dateFormat: "d 'de' MMMM yyyy, HH:mm" }}
-          </dd>
-        </div>
-
-        <div class="sm:col-span-2">
-          <dt class="text-xs font-medium text-surface-500 uppercase tracking-wide">
-            {{ ES.meetings.fields.location }}
-          </dt>
-          <dd class="mt-1 text-sm text-surface-900">{{ m.location }}</dd>
-        </div>
-
-        @if (m.response_note) {
-          <div class="sm:col-span-2">
-            <dt class="text-xs font-medium text-surface-500 uppercase tracking-wide">
-              {{ ES.meetings.fields.responseNote }}
-            </dt>
-            <dd class="mt-1 text-sm text-surface-900 whitespace-pre-line">{{ m.response_note }}</dd>
-          </div>
-        }
-
-        <div class="sm:col-span-2">
-          <dt class="text-xs font-medium text-surface-500 uppercase tracking-wide">
-            Last updated by
-          </dt>
-          <dd class="mt-1 text-sm text-surface-500 font-mono text-xs">{{ m.last_updated_by }}</dd>
-        </div>
-      </dl>
-    </section>
-
-    <!-- Error message (action errors) -->
-    @if (errorMessage()) {
-      <p class="text-sm text-red-600" role="alert" aria-live="assertive">{{ errorMessage() }}</p>
-    }
-
-    <!-- Actions -->
-    @if (availableActions() !== 'none') {
-      <div class="flex flex-wrap gap-3" role="group" aria-label="Meeting actions">
-        @if (availableActions() === 'full') {
-          <button
-            type="button"
-            class="p-button p-button-success"
-            [disabled]="isLoading()"
-            (click)="openConfirm('accept')"
-          >
-            {{ ES.meetings.actions.accept }}
-          </button>
-          <button
-            type="button"
-            class="p-button p-button-danger p-button-outlined"
-            [disabled]="isLoading()"
-            (click)="openConfirm('reject')"
-          >
-            {{ ES.meetings.actions.reject }}
-          </button>
-        }
+  } @else if (error()) {
+    <div class="p-4" role="alert" aria-live="assertive">
+      <p class="text-red-600">{{ error() }}</p>
+      <button type="button" pButton outlined="true" class="mt-4" (click)="goBack()">
+        {{ ES.common.back }}
+      </button>
+    </div>
+  } @else if (meeting(); as m) {
+    <div class="max-w-2xl mx-auto p-6 flex flex-col gap-6">
+      <!-- Header -->
+      <div class="flex items-center gap-4">
         <button
           type="button"
-          class="p-button p-button-outlined"
-          [disabled]="isLoading()"
-          (click)="openReschedule()"
+          pButton
+          text="true"
+          size="small"
+          (click)="goBack()"
+          aria-label="{{ ES.common.back }}"
         >
-          {{ ES.meetings.actions.reschedule }}
+          ← {{ ES.common.back }}
         </button>
+        <h1 class="text-2xl font-semibold flex-1">{{ ES.meetings.fields.status }}</h1>
+        <span
+          class="px-3 py-1 rounded-full text-sm font-medium"
+          [class.bg-yellow-100]="m.status === 'proposed'"
+          [class.text-yellow-800]="m.status === 'proposed'"
+          [class.bg-blue-100]="m.status === 'rescheduled'"
+          [class.text-blue-800]="m.status === 'rescheduled'"
+          [class.bg-green-100]="m.status === 'accepted'"
+          [class.text-green-800]="m.status === 'accepted'"
+          [class.bg-red-100]="m.status === 'rejected'"
+          [class.text-red-800]="m.status === 'rejected'"
+          [class.bg-slate-200]="m.status === 'cancelled'"
+          [class.text-slate-600]="m.status === 'cancelled'"
+          aria-label="{{ ES.meetings.fields.status }}: {{ ES.meetings.statuses[m.status] }}"
+        >
+          {{ ES.meetings.statuses[m.status] }}
+        </span>
       </div>
-    }
 
-    <!-- Inline confirm: accept / reject -->
-    @if (pendingAction()) {
+      <!-- Meeting Info -->
       <section
-        class="border border-surface-200 rounded-xl p-5 flex flex-col gap-4 bg-surface-50"
-        aria-label="Confirm action"
-        aria-live="polite"
+        class="border border-slate-200 rounded-xl p-5 flex flex-col gap-4"
+        aria-label="Meeting details"
       >
-        <p class="font-medium">
-          @if (pendingAction() === 'accept') {
-            {{ ES.meetings.actions.accept }} — confirm?
-          } @else {
-            {{ ES.meetings.actions.reject }} — confirm?
-          }
-        </p>
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              {{ ES.conferences.fields.speaker }}
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">{{ m.speaker.nombre_empresa }}</dd>
+          </div>
 
-        <div class="flex flex-col gap-1">
-          <label for="response-note" class="text-sm font-medium text-surface-700">
-            {{ ES.meetings.fields.responseNote }}
-            <span class="text-surface-400 font-normal">(optional)</span>
-          </label>
-          <textarea
-            id="response-note"
-            class="p-inputtextarea w-full text-sm"
-            rows="3"
-            [value]="responseNote()"
-            (input)="responseNote.set($any($event.target).value)"
-            aria-describedby="response-note-hint"
-          ></textarea>
-          <span id="response-note-hint" class="sr-only">Optional note for the other party</span>
-        </div>
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              {{ ES.register.fields.nombreEmpresa }}
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">{{ m.participant.nombre_empresa }}</dd>
+          </div>
 
-        <div class="flex gap-3">
-          <button
-            type="button"
-            class="p-button"
-            [class.p-button-success]="pendingAction() === 'accept'"
-            [class.p-button-danger]="pendingAction() === 'reject'"
-            [disabled]="isLoading()"
-            (click)="confirmAction()"
-          >
-            {{ ES.common.confirm }}
-          </button>
-          <button
-            type="button"
-            class="p-button p-button-outlined p-button-secondary"
-            [disabled]="isLoading()"
-            (click)="cancelConfirm()"
-          >
-            {{ ES.common.cancel }}
-          </button>
-        </div>
-      </section>
-    }
-
-    <!-- Inline reschedule form -->
-    @if (showRescheduleForm()) {
-      <section
-        class="border border-surface-200 rounded-xl p-5 flex flex-col gap-4"
-        aria-label="Reschedule meeting"
-        aria-live="polite"
-      >
-        <h2 class="font-medium text-base">{{ ES.meetings.actions.reschedule }}</h2>
-
-        <form [formGroup]="rescheduleForm" (ngSubmit)="submitReschedule()" novalidate class="flex flex-col gap-4">
-
-          <div class="flex flex-col gap-1">
-            <label for="reschedule-start" class="text-sm font-medium text-surface-700">
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
               {{ ES.meetings.fields.start }}
-              <span class="text-red-500" aria-hidden="true">*</span>
-            </label>
-            <input
-              id="reschedule-start"
-              type="datetime-local"
-              class="p-inputtext w-full text-sm"
-              formControlName="start"
-              aria-required="true"
-              [attr.aria-describedby]="rescheduleForm.get('start')?.invalid && rescheduleForm.get('start')?.touched ? 'start-error' : null"
-            />
-            @if (rescheduleForm.get('start')?.invalid && rescheduleForm.get('start')?.touched) {
-              <span id="start-error" class="text-xs text-red-600" role="alert">
-                @if (rescheduleForm.get('start')?.hasError('required')) {
-                  {{ ES.common.required }}
-                } @else if (rescheduleForm.get('start')?.hasError('pastDate')) {
-                  {{ ES.common.pastDate }}
-                }
-              </span>
-            }
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">
+              {{ m.start | dateFormat: "d 'de' MMMM yyyy, HH:mm" }}
+            </dd>
           </div>
 
-          <div class="flex flex-col gap-1">
-            <label for="reschedule-ending" class="text-sm font-medium text-surface-700">
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
               {{ ES.meetings.fields.ending }}
-              <span class="text-red-500" aria-hidden="true">*</span>
-            </label>
-            <input
-              id="reschedule-ending"
-              type="datetime-local"
-              class="p-inputtext w-full text-sm"
-              formControlName="ending"
-              aria-required="true"
-              [attr.aria-describedby]="rescheduleForm.get('ending')?.invalid && rescheduleForm.get('ending')?.touched ? 'ending-error' : null"
-            />
-            @if (rescheduleForm.get('ending')?.invalid && rescheduleForm.get('ending')?.touched) {
-              <span id="ending-error" class="text-xs text-red-600" role="alert">
-                {{ ES.common.required }}
-              </span>
-            }
-            @if (rescheduleForm.hasError('dateRange') && rescheduleForm.get('ending')?.touched) {
-              <span class="text-xs text-red-600" role="alert">
-                {{ ES.conferences.errors.endBeforeStart }}
-              </span>
-            }
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">
+              {{ m.ending | dateFormat: "d 'de' MMMM yyyy, HH:mm" }}
+            </dd>
           </div>
 
-          <div class="flex flex-col gap-1">
-            <label for="reschedule-location" class="text-sm font-medium text-surface-700">
+          <div class="sm:col-span-2">
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
               {{ ES.meetings.fields.location }}
-              <span class="text-red-500" aria-hidden="true">*</span>
-            </label>
-            <input
-              id="reschedule-location"
-              type="text"
-              class="p-inputtext w-full text-sm"
-              formControlName="location"
-              aria-required="true"
-              [attr.aria-describedby]="rescheduleForm.get('location')?.invalid && rescheduleForm.get('location')?.touched ? 'location-error' : null"
-            />
-            @if (rescheduleForm.get('location')?.invalid && rescheduleForm.get('location')?.touched) {
-              <span id="location-error" class="text-xs text-red-600" role="alert">
-                {{ ES.common.required }}
-              </span>
-            }
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">{{ m.location }}</dd>
           </div>
 
+          @if (m.response_note) {
+            <div class="sm:col-span-2">
+              <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                {{ ES.meetings.fields.responseNote }}
+              </dt>
+              <dd class="mt-1 text-sm text-slate-900 whitespace-pre-line">{{ m.response_note }}</dd>
+            </div>
+          }
+
+          <div class="sm:col-span-2">
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              Last updated by
+            </dt>
+            <dd class="mt-1 text-sm text-slate-500 font-mono text-xs">{{ m.last_updated_by }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Error message (action errors) -->
+      @if (errorMessage()) {
+        <p class="text-sm text-red-600" role="alert" aria-live="assertive">{{ errorMessage() }}</p>
+      }
+
+      <!-- Actions -->
+      @if (availableActions() !== 'none') {
+        <div class="flex flex-wrap gap-3" role="group" aria-label="Meeting actions">
+          @if (availableActions() === 'full') {
+            <button
+              type="button"
+              pButton
+              severity="success"
+              [disabled]="isLoading()"
+              (click)="openConfirm('accept')"
+            >
+              {{ ES.meetings.actions.accept }}
+            </button>
+            <button
+              type="button"
+              pButton
+              severity="danger"
+              outlined="true"
+              [disabled]="isLoading()"
+              (click)="openConfirm('reject')"
+            >
+              {{ ES.meetings.actions.reject }}
+            </button>
+          }
+          <button
+            type="button"
+            pButton
+            outlined="true"
+            [disabled]="isLoading()"
+            (click)="openReschedule()"
+          >
+            {{ ES.meetings.actions.reschedule }}
+          </button>
+        </div>
+      }
+
+      <!-- Inline confirm: accept / reject -->
+      @if (pendingAction()) {
+        <section
+          class="border border-slate-200 rounded-xl p-5 flex flex-col gap-4 bg-slate-50"
+          aria-label="Confirm action"
+          aria-live="polite"
+        >
+          <p class="font-medium">
+            @if (pendingAction() === 'accept') {
+              {{ ES.meetings.actions.accept }} — confirm?
+            } @else {
+              {{ ES.meetings.actions.reject }} — confirm?
+            }
+          </p>
+
           <div class="flex flex-col gap-1">
-            <label for="reschedule-note" class="text-sm font-medium text-surface-700">
+            <label for="response-note" class="text-sm font-medium text-slate-700">
               {{ ES.meetings.fields.responseNote }}
-              <span class="text-surface-400 font-normal">(optional)</span>
+              <span class="text-slate-400 font-normal">(optional)</span>
             </label>
             <textarea
-              id="reschedule-note"
-              class="p-inputtextarea w-full text-sm"
+              id="response-note"
+              class="border border-slate-200 rounded-lg p-2 w-full text-sm"
               rows="3"
-              formControlName="response_note"
+              [value]="responseNote()"
+              (input)="responseNote.set($any($event.target).value)"
+              aria-describedby="response-note-hint"
             ></textarea>
+            <span id="response-note-hint" class="sr-only">Optional note for the other party</span>
           </div>
 
           <div class="flex gap-3">
             <button
-              type="submit"
-              class="p-button"
+              type="button"
+              pButton
+              [class.p-button-success]="pendingAction() === 'accept'"
+              [class.p-button-danger]="pendingAction() === 'reject'"
               [disabled]="isLoading()"
+              (click)="confirmAction()"
             >
-              {{ ES.common.save }}
+              {{ ES.common.confirm }}
             </button>
             <button
               type="button"
-              class="p-button p-button-outlined p-button-secondary"
+              pButton
+              outlined="true"
+              severity="secondary"
               [disabled]="isLoading()"
-              (click)="cancelReschedule()"
+              (click)="cancelConfirm()"
             >
               {{ ES.common.cancel }}
             </button>
           </div>
+        </section>
+      }
 
-        </form>
-      </section>
-    }
+      <!-- Inline reschedule form -->
+      @if (showRescheduleForm()) {
+        <section
+          class="border border-slate-200 rounded-xl p-5 flex flex-col gap-4"
+          aria-label="Reschedule meeting"
+          aria-live="polite"
+        >
+          <h2 class="font-medium text-base">{{ ES.meetings.actions.reschedule }}</h2>
 
-  </div>
-}
+          <form
+            [formGroup]="rescheduleForm"
+            (ngSubmit)="submitReschedule()"
+            novalidate
+            class="flex flex-col gap-4"
+          >
+            <div class="flex flex-col gap-1">
+              <label for="reschedule-start" class="text-sm font-medium text-slate-700">
+                {{ ES.meetings.fields.start }}
+                <span class="text-red-500" aria-hidden="true">*</span>
+              </label>
+              <input
+                id="reschedule-start"
+                type="datetime-local"
+                class="border border-slate-200 rounded-lg p-2 w-full text-sm"
+                formControlName="start"
+                aria-required="true"
+                [attr.aria-describedby]="
+                  rescheduleForm.get('start')?.invalid && rescheduleForm.get('start')?.touched
+                    ? 'start-error'
+                    : null
+                "
+              />
+              @if (rescheduleForm.get('start')?.invalid && rescheduleForm.get('start')?.touched) {
+                <span id="start-error" class="text-xs text-red-600" role="alert">
+                  @if (rescheduleForm.get('start')?.hasError('required')) {
+                    {{ ES.common.required }}
+                  } @else if (rescheduleForm.get('start')?.hasError('pastDate')) {
+                    {{ ES.common.pastDate }}
+                  }
+                </span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label for="reschedule-ending" class="text-sm font-medium text-slate-700">
+                {{ ES.meetings.fields.ending }}
+                <span class="text-red-500" aria-hidden="true">*</span>
+              </label>
+              <input
+                id="reschedule-ending"
+                type="datetime-local"
+                class="border border-slate-200 rounded-lg p-2 w-full text-sm"
+                formControlName="ending"
+                aria-required="true"
+                [attr.aria-describedby]="
+                  rescheduleForm.get('ending')?.invalid && rescheduleForm.get('ending')?.touched
+                    ? 'ending-error'
+                    : null
+                "
+              />
+              @if (rescheduleForm.get('ending')?.invalid && rescheduleForm.get('ending')?.touched) {
+                <span id="ending-error" class="text-xs text-red-600" role="alert">
+                  {{ ES.common.required }}
+                </span>
+              }
+              @if (rescheduleForm.hasError('dateRange') && rescheduleForm.get('ending')?.touched) {
+                <span class="text-xs text-red-600" role="alert">
+                  {{ ES.conferences.errors.endBeforeStart }}
+                </span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label for="reschedule-location" class="text-sm font-medium text-slate-700">
+                {{ ES.meetings.fields.location }}
+                <span class="text-red-500" aria-hidden="true">*</span>
+              </label>
+              <input
+                id="reschedule-location"
+                type="text"
+                class="border border-slate-200 rounded-lg p-2 w-full text-sm"
+                formControlName="location"
+                aria-required="true"
+                [attr.aria-describedby]="
+                  rescheduleForm.get('location')?.invalid && rescheduleForm.get('location')?.touched
+                    ? 'location-error'
+                    : null
+                "
+              />
+              @if (
+                rescheduleForm.get('location')?.invalid && rescheduleForm.get('location')?.touched
+              ) {
+                <span id="location-error" class="text-xs text-red-600" role="alert">
+                  {{ ES.common.required }}
+                </span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label for="reschedule-note" class="text-sm font-medium text-slate-700">
+                {{ ES.meetings.fields.responseNote }}
+                <span class="text-slate-400 font-normal">(optional)</span>
+              </label>
+              <textarea
+                id="reschedule-note"
+                class="border border-slate-200 rounded-lg p-2 w-full text-sm"
+                rows="3"
+                formControlName="response_note"
+              ></textarea>
+            </div>
+
+            <div class="flex gap-3">
+              <button type="submit" pButton [disabled]="isLoading()">
+                {{ ES.common.save }}
+              </button>
+              <button
+                type="button"
+                pButton
+                outlined="true"
+                severity="secondary"
+                [disabled]="isLoading()"
+                (click)="cancelReschedule()"
+              >
+                {{ ES.common.cancel }}
+              </button>
+            </div>
+          </form>
+        </section>
+      }
+    </div>
+  }
+</div>

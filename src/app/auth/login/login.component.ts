@@ -30,7 +30,7 @@ export class LoginComponent {
   readonly isLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
 
-  private failedAttempts: { count: number; firstAt: number } = { count: 0, firstAt: 0 };
+  private readonly failedAttempts = signal<{ count: number; firstAt: number }>({ count: 0, firstAt: 0 });
 
   readonly emailForm = new FormGroup({
     email: new FormControl('', {
@@ -62,12 +62,11 @@ export class LoginComponent {
     try {
       const { exists, estado } = await this.authService.checkEmail(this.emailValue);
 
-      if (!exists) {
-        this.errorMessage.set(ES.auth.notRegisteredError);
-        return;
-      }
-
-      if (estado === 'pending') {
+      // The SELECT RLS policy only exposes profiles where user_id IS NULL (pending state).
+      // Registered profiles (user_id set) are invisible to anonymous queries, so exists=false
+      // does NOT mean "not registered" — it can mean the row is simply hidden by RLS.
+      // Only block on a confirmed pending state; everything else proceeds to password entry.
+      if (exists && estado === 'pending') {
         this.errorMessage.set(ES.auth.pendingMessage);
         return;
       }
@@ -124,21 +123,18 @@ export class LoginComponent {
   }
 
   private isLockedOut(): boolean {
-    if (this.failedAttempts.count < LOCKOUT_MAX_ATTEMPTS) {
-      return false;
-    }
-    return Date.now() - this.failedAttempts.firstAt < LOCKOUT_WINDOW_MS;
+    const fa = this.failedAttempts();
+    if (fa.count < LOCKOUT_MAX_ATTEMPTS) return false;
+    return Date.now() - fa.firstAt < LOCKOUT_WINDOW_MS;
   }
 
   private recordFailedAttempt(): void {
     const now = Date.now();
-    if (
-      this.failedAttempts.count === 0 ||
-      now - this.failedAttempts.firstAt >= LOCKOUT_WINDOW_MS
-    ) {
-      this.failedAttempts = { count: 1, firstAt: now };
-    } else {
-      this.failedAttempts.count += 1;
-    }
+    this.failedAttempts.update((fa) => {
+      if (fa.count === 0 || now - fa.firstAt >= LOCKOUT_WINDOW_MS) {
+        return { count: 1, firstAt: now };
+      }
+      return { count: fa.count + 1, firstAt: fa.firstAt };
+    });
   }
 }

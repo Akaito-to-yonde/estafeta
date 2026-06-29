@@ -11,8 +11,29 @@
   --color-brand-400: oklch(68% 0.175 315);
   --color-brand-500: oklch(58% 0.21 315);
   --color-brand-600: oklch(50% 0.22 315);
-  --color-brand-700: oklch(43% 0.20 315);
+  --color-brand-700: oklch(43% 0.2 315);
   --color-brand-800: oklch(35% 0.17 315);
   --color-brand-900: oklch(28% 0.13 315);
   --color-brand-950: oklch(18% 0.09 315);
+}
+
+/*
+  Unlayered + !important: highest possible cascade priority.
+  Needed because PrimeNG dynamically injects styles after this file loads;
+  those injected styles can be unlayered themselves, which beats any @layer block.
+  Tailwind v4 preflight also resets border-width to 0 on all elements,
+  so we must restore border-width explicitly, not just border-color.
+*/
+.p-inputtext,
+textarea.p-textarea,
+.p-select {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: oklch(85% 0.08 315) !important;
+}
+
+.p-inputtext:hover,
+textarea.p-textarea:hover,
+.p-select:not(.p-disabled):hover {
+  border-color: oklch(72% 0.14 315) !important;
 }

@@ -38,7 +38,7 @@ export class OverlapService {
   async checkOverlapRemote(req: OverlapCheckRequest): Promise<OverlapCheckResponse> {
     const { data, error } = await this.supabase.client.functions.invoke<OverlapCheckResponse>(
       'overlap-check',
-      { body: req }
+      { body: req },
     );
     if (error) {
       throw error;

@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectModule } from 'primeng/select';
@@ -26,13 +20,7 @@ const HOST_CATEGORIES = ['producer', 'provider', 'services'] as const;
   selector: 'app-meeting-form',
   templateUrl: './meeting-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    ReactiveFormsModule,
-    SelectModule,
-    InputTextModule,
-    TextareaModule,
-    ButtonModule,
-  ],
+  imports: [ReactiveFormsModule, SelectModule, InputTextModule, TextareaModule, ButtonModule],
 })
 export class MeetingFormComponent implements OnInit {
   private readonly router = inject(Router);
@@ -54,12 +42,21 @@ export class MeetingFormComponent implements OnInit {
   readonly form = new FormGroup(
     {
       speaker_id: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-      start: new FormControl('', { nonNullable: true, validators: [Validators.required, futureDateValidator()] }),
+      start: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, futureDateValidator()],
+      }),
       ending: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-      location: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(255)] }),
-      response_note: new FormControl('', { nonNullable: true, validators: [Validators.maxLength(500)] }),
+      location: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.maxLength(255)],
+      }),
+      response_note: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.maxLength(500)],
+      }),
     },
-    { validators: dateRangeValidator('start', 'ending') }
+    { validators: dateRangeValidator('start', 'ending') },
   );
 
   ngOnInit(): void {
@@ -70,8 +67,8 @@ export class MeetingFormComponent implements OnInit {
     const speakerId = this.route.snapshot.queryParamMap.get('speakerId');
 
     const result = await this.profileService.getAllProfiles(1, { estado: 'approved' });
-    const filtered = result.data.filter(
-      (p) => (HOST_CATEGORIES as readonly string[]).includes(p.categoria)
+    const filtered = result.data.filter((p) =>
+      (HOST_CATEGORIES as readonly string[]).includes(p.categoria),
     );
     this.hosts.set(filtered);
 

@@ -61,7 +61,9 @@ function makeSupabaseChainMock() {
     update: vi.fn().mockReturnThis(),
     auth: {
       getSession: vi.fn().mockResolvedValue({ data: { session: null } }),
-      onAuthStateChange: vi.fn().mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
+      onAuthStateChange: vi
+        .fn()
+        .mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
     },
   };
   return { client: chain };
@@ -333,7 +335,9 @@ describe('Accessibility', () => {
           useValue: {
             pendingProfiles: signal([]),
             allProfiles: signal([]),
-            getAllProfiles: vi.fn().mockResolvedValue({ data: [], count: 0, page: 1, pageSize: 25 }),
+            getAllProfiles: vi
+              .fn()
+              .mockResolvedValue({ data: [], count: 0, page: 1, pageSize: 25 }),
           },
         },
         { provide: ActivatedRoute, useValue: makeActivatedRouteMock() },

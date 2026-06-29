@@ -1,96 +1,127 @@
-<article class="conference-detail">
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   @if (loading()) {
-    <p class="conference-detail__loading" role="status" aria-live="polite">{{ ES.common.loading }}</p>
+    <div class="flex justify-center items-center py-20" role="status" aria-live="polite">
+      <span class="text-slate-400">{{ ES.common.loading }}</span>
+    </div>
   } @else if (error() || !conference()) {
-    <p class="conference-detail__error" role="alert">{{ ES.common.error }}</p>
+    <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3" role="alert">
+      {{ ES.common.error }}
+    </div>
   } @else {
-    <header class="conference-detail__header">
-      <h1 class="conference-detail__title">{{ ES.conferences.detailTitle }}</h1>
-    </header>
-
-    <section class="conference-detail__body" aria-label="{{ ES.conferences.detailTitle }}">
-      <dl class="conference-detail__fields">
-        <div class="conference-detail__field">
-          <dt class="conference-detail__label">{{ ES.conferences.fields.subject }}</dt>
-          <dd class="conference-detail__value">{{ conference()!.subject }}</dd>
-        </div>
-
-        <div class="conference-detail__field">
-          <dt class="conference-detail__label">{{ ES.conferences.fields.starting }}</dt>
-          <dd class="conference-detail__value">{{ conference()!.start | dateFormat: 'dd/MM/yyyy HH:mm' }}</dd>
-        </div>
-
-        <div class="conference-detail__field">
-          <dt class="conference-detail__label">{{ ES.conferences.fields.ending }}</dt>
-          <dd class="conference-detail__value">{{ conference()!.ending | dateFormat: 'dd/MM/yyyy HH:mm' }}</dd>
-        </div>
-
-        <div class="conference-detail__field">
-          <dt class="conference-detail__label">{{ ES.conferences.fields.location }}</dt>
-          <dd class="conference-detail__value">{{ conference()!.location }}</dd>
-        </div>
-      </dl>
-
-      <section class="conference-detail__speaker" aria-label="{{ ES.conferences.fields.speaker }}">
-        <h2 class="conference-detail__speaker-title">{{ ES.conferences.fields.speaker }}</h2>
-        <dl class="conference-detail__fields">
-          <div class="conference-detail__field">
-            <dt class="conference-detail__label">{{ ES.register.fields.nombreEmpresa }}</dt>
-            <dd class="conference-detail__value">{{ conference()!.speaker.nombre_empresa }}</dd>
-          </div>
-
-          <div class="conference-detail__field">
-            <dt class="conference-detail__label">{{ ES.register.fields.categoria }}</dt>
-            <dd class="conference-detail__value">{{ conference()!.speaker.categoria }}</dd>
-          </div>
-
-          <div class="conference-detail__field">
-            <dt class="conference-detail__label">{{ ES.register.fields.contacto }}</dt>
-            <dd class="conference-detail__value">{{ conference()!.speaker.contacto }}</dd>
-          </div>
-
-          <div class="conference-detail__field">
-            <dt class="conference-detail__label">{{ ES.register.fields.actividad }}</dt>
-            <dd class="conference-detail__value">{{ conference()!.speaker.actividad }}</dd>
-          </div>
-
-          <div class="conference-detail__field">
-            <dt class="conference-detail__label">{{ ES.register.fields.email }}</dt>
-            <dd class="conference-detail__value">
-              <a [href]="'mailto:' + conference()!.speaker.email">{{ conference()!.speaker.email }}</a>
-            </dd>
-          </div>
-        </dl>
-      </section>
-    </section>
-
-    <footer class="conference-detail__actions">
+    <div class="flex items-center gap-3 mb-6">
       <p-button
         [label]="ES.common.back"
         icon="pi pi-arrow-left"
         severity="secondary"
         (onClick)="goBack()"
-        aria-label="{{ ES.common.back }}"
+        [attr.aria-label]="ES.common.back"
       />
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">
+        {{ ES.conferences.detailTitle }}
+      </h1>
+    </div>
 
-      @if (canPropose()) {
-        <p-button
-          [label]="ES.conferences.proposeButton"
-          icon="pi pi-calendar-plus"
-          (onClick)="proposeMeeting()"
-          aria-label="{{ ES.conferences.proposeButton }}"
-        />
-      }
+    <div
+      class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 flex flex-col gap-8"
+    >
+      <section aria-label="{{ ES.conferences.detailTitle }}">
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              {{ ES.conferences.fields.subject }}
+            </dt>
+            <dd class="mt-1 text-sm font-medium text-slate-900">{{ conference()!.subject }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              {{ ES.conferences.fields.location }}
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">{{ conference()!.location }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              {{ ES.conferences.fields.starting }}
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">
+              {{ conference()!.start | dateFormat: 'dd/MM/yyyy HH:mm' }}
+            </dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              {{ ES.conferences.fields.ending }}
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">
+              {{ conference()!.ending | dateFormat: 'dd/MM/yyyy HH:mm' }}
+            </dd>
+          </div>
+        </dl>
+      </section>
 
-      @if (canEdit()) {
-        <p-button
-          [label]="ES.conferences.editButton"
-          icon="pi pi-pencil"
-          severity="secondary"
-          (onClick)="editConference()"
-          aria-label="{{ ES.conferences.editButton }}"
-        />
-      }
-    </footer>
+      <div class="border-t border-slate-100"></div>
+
+      <section [attr.aria-label]="ES.conferences.fields.speaker">
+        <h2 class="text-base font-semibold text-slate-900 mb-4">
+          {{ ES.conferences.fields.speaker }}
+        </h2>
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              {{ ES.register.fields.nombreEmpresa }}
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">{{ conference()!.speaker.nombre_empresa }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              {{ ES.register.fields.categoria }}
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">{{ conference()!.speaker.categoria }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              {{ ES.register.fields.contacto }}
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">{{ conference()!.speaker.contacto }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              {{ ES.register.fields.actividad }}
+            </dt>
+            <dd class="mt-1 text-sm text-slate-900">{{ conference()!.speaker.actividad }}</dd>
+          </div>
+          <div class="sm:col-span-2">
+            <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+              {{ ES.register.fields.email }}
+            </dt>
+            <dd class="mt-1 text-sm">
+              <a
+                [href]="'mailto:' + conference()!.speaker.email"
+                class="text-brand-600 hover:text-brand-700"
+                >{{ conference()!.speaker.email }}</a
+              >
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <div class="flex flex-wrap gap-3 pt-2 border-t border-slate-100">
+        @if (canPropose()) {
+          <p-button
+            [label]="ES.conferences.proposeButton"
+            icon="pi pi-calendar-plus"
+            (onClick)="proposeMeeting()"
+            [attr.aria-label]="ES.conferences.proposeButton"
+          />
+        }
+        @if (canEdit()) {
+          <p-button
+            [label]="ES.conferences.editButton"
+            icon="pi pi-pencil"
+            severity="secondary"
+            (onClick)="editConference()"
+            [attr.aria-label]="ES.conferences.editButton"
+          />
+        }
+      </div>
+    </div>
   }
-</article>
+</div>

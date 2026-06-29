@@ -67,8 +67,7 @@ describe('authGuard', () => {
   let redirectService: RedirectService;
   let router: Router;
 
-  const mockState = (url: string) =>
-    ({ url } as Parameters<typeof authGuard>[1]);
+  const mockState = (url: string) => ({ url }) as Parameters<typeof authGuard>[1];
 
   const mockRoute = {} as Parameters<typeof authGuard>[0];
 

@@ -1,7 +1,12 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { SupabaseService } from '../../supabase.service';
-import { Meeting, MeetingWithParties, ProposeMeetingDto, RescheduleMeetingDto } from '../models/meeting.model';
+import {
+  Meeting,
+  MeetingWithParties,
+  ProposeMeetingDto,
+  RescheduleMeetingDto,
+} from '../models/meeting.model';
 import { PaginatedResult } from '../models/pagination.model';
 
 const PAGE_SIZE = 25;
@@ -19,19 +24,20 @@ export class MeetingService {
   readonly currentUserId = signal<string | null>(null);
 
   readonly meetingsAsClient = computed(() =>
-    this.meetings().filter(m => m.participant_id === this.currentUserId())
+    this.meetings().filter((m) => m.participant_id === this.currentUserId()),
   );
 
   readonly meetingsAsHost = computed(() =>
-    this.meetings().filter(m => m.speaker_id === this.currentUserId())
+    this.meetings().filter((m) => m.speaker_id === this.currentUserId()),
   );
 
-  readonly actionRequiredCount = computed(() =>
-    this.meetings().filter(
-      m =>
-        ['proposed', 'rescheduled'].includes(m.status) &&
-        m.last_updated_by !== this.currentUserId()
-    ).length
+  readonly actionRequiredCount = computed(
+    () =>
+      this.meetings().filter(
+        (m) =>
+          ['proposed', 'rescheduled'].includes(m.status) &&
+          m.last_updated_by !== this.currentUserId(),
+      ).length,
   );
 
   constructor() {
@@ -39,10 +45,7 @@ export class MeetingService {
   }
 
   async getMeetingById(id: string): Promise<MeetingWithParties | null> {
-    const { data } = await this.supabase.client
-      .from('meeting')
-      .select(MEETING_SELECT)
-      .eq('id', id);
+    const { data } = await this.supabase.client.from('meeting').select(MEETING_SELECT).eq('id', id);
 
     return (data?.[0] as MeetingWithParties) ?? null;
   }
@@ -92,10 +95,7 @@ export class MeetingService {
   }
 
   async rescheduleMeeting(id: string, data: RescheduleMeetingDto): Promise<{ error: unknown }> {
-    const { error } = await this.supabase.client
-      .from('meeting')
-      .update(data)
-      .eq('id', id);
+    const { error } = await this.supabase.client.from('meeting').update(data).eq('id', id);
 
     return { error };
   }
@@ -115,10 +115,8 @@ export class MeetingService {
     if (isAdmin) {
       const channel = this.supabase.client
         .channel('meetings-admin')
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'meeting' },
-          payload => this.handleRealtimeEvent(payload)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'meeting' }, (payload) =>
+          this.handleRealtimeEvent(payload),
         )
         .subscribe();
 
@@ -131,7 +129,7 @@ export class MeetingService {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'meeting', filter: `speaker_id=eq.${userId}` },
-        payload => this.handleRealtimeEvent(payload)
+        (payload) => this.handleRealtimeEvent(payload),
       )
       .subscribe();
 
@@ -140,7 +138,7 @@ export class MeetingService {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'meeting', filter: `participant_id=eq.${userId}` },
-        payload => this.handleRealtimeEvent(payload)
+        (payload) => this.handleRealtimeEvent(payload),
       )
       .subscribe();
 
@@ -157,18 +155,16 @@ export class MeetingService {
   private handleRealtimeEvent(payload: { eventType: string; new: unknown; old: unknown }): void {
     if (payload.eventType === 'INSERT') {
       const newRow = payload.new as MeetingWithParties;
-      this.meetings.update(current => {
-        if (current.some(m => m.id === newRow.id)) return current;
+      this.meetings.update((current) => {
+        if (current.some((m) => m.id === newRow.id)) return current;
         return [...current, newRow];
       });
     } else if (payload.eventType === 'UPDATE') {
       const updated = payload.new as MeetingWithParties;
-      this.meetings.update(current =>
-        current.map(m => (m.id === updated.id ? updated : m))
-      );
+      this.meetings.update((current) => current.map((m) => (m.id === updated.id ? updated : m)));
     } else if (payload.eventType === 'DELETE') {
       const deleted = payload.old as { id: string };
-      this.meetings.update(current => current.filter(m => m.id !== deleted.id));
+      this.meetings.update((current) => current.filter((m) => m.id !== deleted.id));
     }
   }
 }

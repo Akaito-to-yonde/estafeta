@@ -6,10 +6,13 @@ import { RouterLink, RouterOutlet } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, RouterLink],
   template: `
-    <div class="min-h-screen bg-gradient-to-br from-brand-50 via-white to-brand-50 flex flex-col">
-
+    <div class="min-h-screen bg-slate-100 flex flex-col">
       <header class="px-6 py-5">
-        <a routerLink="/" class="inline-flex items-center gap-3 group" aria-label="Estafeta — Inicio">
+        <a
+          routerLink="/"
+          class="inline-flex items-center gap-3 group"
+          aria-label="Estafeta — Inicio"
+        >
           <svg
             viewBox="0 0 40 40"
             fill="none"
@@ -23,7 +26,9 @@ import { RouterLink, RouterOutlet } from '@angular/router';
             <path d="M22 18 L30 20 L22 22 Z" fill="white" />
             <rect x="10" y="26" width="20" height="4" rx="2" fill="white" />
           </svg>
-          <span class="text-lg font-bold text-slate-800 group-hover:text-brand-600 transition-colors duration-150">
+          <span
+            class="text-lg font-bold text-slate-800 group-hover:text-brand-600 transition-colors duration-150"
+          >
             Estafeta
           </span>
         </a>
@@ -32,7 +37,6 @@ import { RouterLink, RouterOutlet } from '@angular/router';
       <main class="flex-1 flex items-center justify-center px-4 py-8">
         <router-outlet />
       </main>
-
     </div>
   `,
 })

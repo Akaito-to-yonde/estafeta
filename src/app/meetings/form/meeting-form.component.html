@@ -1,159 +1,200 @@
-<section class="meeting-form-page" aria-labelledby="form-title">
-  <h1 id="form-title">{{ i18n.proposeButton }}</h1>
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+    <h1 id="form-title" class="text-2xl font-bold text-slate-900 mb-6">{{ i18n.proposeButton }}</h1>
 
-  @if (overlapError()) {
-    <div class="alert alert-error" role="alert" aria-live="assertive">
-      {{ overlapError() }}
-    </div>
-  }
+    @if (overlapError()) {
+      <div
+        class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 mb-5"
+        role="alert"
+        aria-live="assertive"
+      >
+        {{ overlapError() }}
+      </div>
+    }
 
-  @if (errorMessage()) {
-    <div class="alert alert-error" role="alert" aria-live="assertive">
-      {{ errorMessage() }}
-    </div>
-  }
+    @if (errorMessage()) {
+      <div
+        class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 mb-5"
+        role="alert"
+        aria-live="assertive"
+      >
+        {{ errorMessage() }}
+      </div>
+    }
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="flex flex-col gap-5">
+      <div class="flex flex-col gap-1.5">
+        <label for="speaker_id" class="text-sm font-medium text-slate-700">
+          Anfitrión<span class="text-red-500" aria-hidden="true"> *</span>
+        </label>
+        <p-select
+          inputId="speaker_id"
+          formControlName="speaker_id"
+          styleClass="w-full"
+          [options]="hosts()"
+          optionLabel="nombre_empresa"
+          optionValue="user_id"
+          [placeholder]="common.loading"
+          aria-required="true"
+          [attr.aria-describedby]="
+            form.get('speaker_id')!.invalid && form.get('speaker_id')!.touched
+              ? 'speaker-error'
+              : null
+          "
+          [class.ng-invalid]="form.get('speaker_id')!.invalid && form.get('speaker_id')!.touched"
+          [class.ng-dirty]="form.get('speaker_id')!.invalid && form.get('speaker_id')!.touched"
+        />
+        @if (form.get('speaker_id')!.invalid && form.get('speaker_id')!.touched) {
+          <small id="speaker-error" class="text-xs text-red-500" role="alert">{{
+            common.required
+          }}</small>
+        }
+      </div>
 
-    <!-- Host (speaker) -->
-    <div class="field">
-      <label for="speaker_id" class="field-label">
-        Anfitrión<span aria-hidden="true"> *</span>
-      </label>
-      <p-select
-        inputId="speaker_id"
-        formControlName="speaker_id"
-        [options]="hosts()"
-        optionLabel="nombre_empresa"
-        optionValue="user_id"
-        [placeholder]="common.loading"
-        [class]="form.get('speaker_id')!.invalid && form.get('speaker_id')!.touched ? 'ng-invalid ng-dirty' : ''"
-        aria-required="true"
-        [attr.aria-describedby]="form.get('speaker_id')!.invalid && form.get('speaker_id')!.touched ? 'speaker-error' : null"
-      />
-      @if (form.get('speaker_id')!.invalid && form.get('speaker_id')!.touched) {
-        <small id="speaker-error" class="field-error" role="alert">
-          {{ common.required }}
-        </small>
-      }
-    </div>
-
-    <!-- Start datetime -->
-    <div class="field">
-      <label for="start" class="field-label">
-        {{ i18n.fields.start }}<span aria-hidden="true"> *</span>
-      </label>
-      <input
-        pInputText
-        type="datetime-local"
-        id="start"
-        formControlName="start"
-        aria-required="true"
-        [attr.aria-describedby]="(form.get('start')!.invalid && form.get('start')!.touched) ? 'start-error' : null"
-        [class]="form.get('start')!.invalid && form.get('start')!.touched ? 'ng-invalid ng-dirty' : ''"
-      />
-      @if (form.get('start')!.invalid && form.get('start')!.touched) {
-        <small id="start-error" class="field-error" role="alert">
-          @if (form.get('start')!.hasError('required')) {
-            {{ common.required }}
-          } @else if (form.get('start')!.hasError('pastDate')) {
-            {{ common.pastDate }}
-          }
-        </small>
-      }
-    </div>
-
-    <!-- Ending datetime -->
-    <div class="field">
-      <label for="ending" class="field-label">
-        {{ i18n.fields.ending }}<span aria-hidden="true"> *</span>
-      </label>
-      <input
-        pInputText
-        type="datetime-local"
-        id="ending"
-        formControlName="ending"
-        aria-required="true"
-        [attr.aria-describedby]="(form.get('ending')!.invalid && form.get('ending')!.touched) || (form.errors?.['dateRange'] && form.get('ending')!.touched) ? 'ending-error' : null"
-        [class]="(form.get('ending')!.invalid && form.get('ending')!.touched) || (form.errors?.['dateRange'] && form.get('ending')!.touched) ? 'ng-invalid ng-dirty' : ''"
-      />
-      @if (form.get('ending')!.touched) {
-        @if (form.get('ending')!.hasError('required')) {
-          <small id="ending-error" class="field-error" role="alert">
-            {{ common.required }}
-          </small>
-        } @else if (form.errors?.['dateRange']) {
-          <small id="ending-error" class="field-error" role="alert">
-            {{ endBeforeStartError }}
+      <div class="flex flex-col gap-1.5">
+        <label for="start" class="text-sm font-medium text-slate-700">
+          {{ i18n.fields.start }}<span class="text-red-500" aria-hidden="true"> *</span>
+        </label>
+        <input
+          pInputText
+          type="datetime-local"
+          id="start"
+          class="w-full"
+          formControlName="start"
+          aria-required="true"
+          [attr.aria-describedby]="
+            form.get('start')!.invalid && form.get('start')!.touched ? 'start-error' : null
+          "
+          [class.ng-invalid]="form.get('start')!.invalid && form.get('start')!.touched"
+          [class.ng-dirty]="form.get('start')!.invalid && form.get('start')!.touched"
+        />
+        @if (form.get('start')!.invalid && form.get('start')!.touched) {
+          <small id="start-error" class="text-xs text-red-500" role="alert">
+            @if (form.get('start')!.hasError('required')) {
+              {{ common.required }}
+            } @else if (form.get('start')!.hasError('pastDate')) {
+              {{ common.pastDate }}
+            }
           </small>
         }
-      }
-    </div>
+      </div>
 
-    <!-- Location -->
-    <div class="field">
-      <label for="location" class="field-label">
-        {{ i18n.fields.location }}<span aria-hidden="true"> *</span>
-      </label>
-      <input
-        pInputText
-        type="text"
-        id="location"
-        formControlName="location"
-        [maxlength]="255"
-        aria-required="true"
-        [attr.aria-describedby]="form.get('location')!.invalid && form.get('location')!.touched ? 'location-error' : null"
-        [class]="form.get('location')!.invalid && form.get('location')!.touched ? 'ng-invalid ng-dirty' : ''"
-      />
-      @if (form.get('location')!.invalid && form.get('location')!.touched) {
-        <small id="location-error" class="field-error" role="alert">
-          @if (form.get('location')!.hasError('required')) {
-            {{ common.required }}
-          } @else if (form.get('location')!.hasError('maxlength')) {
-            {{ common.maxLength(255) }}
+      <div class="flex flex-col gap-1.5">
+        <label for="ending" class="text-sm font-medium text-slate-700">
+          {{ i18n.fields.ending }}<span class="text-red-500" aria-hidden="true"> *</span>
+        </label>
+        <input
+          pInputText
+          type="datetime-local"
+          id="ending"
+          class="w-full"
+          formControlName="ending"
+          aria-required="true"
+          [attr.aria-describedby]="
+            (form.get('ending')!.invalid && form.get('ending')!.touched) ||
+            (form.errors?.['dateRange'] && form.get('ending')!.touched)
+              ? 'ending-error'
+              : null
+          "
+          [class.ng-invalid]="
+            (form.get('ending')!.invalid && form.get('ending')!.touched) ||
+            (form.errors?.['dateRange'] && form.get('ending')!.touched)
+          "
+          [class.ng-dirty]="
+            (form.get('ending')!.invalid && form.get('ending')!.touched) ||
+            (form.errors?.['dateRange'] && form.get('ending')!.touched)
+          "
+        />
+        @if (form.get('ending')!.touched) {
+          @if (form.get('ending')!.hasError('required')) {
+            <small id="ending-error" class="text-xs text-red-500" role="alert">{{
+              common.required
+            }}</small>
+          } @else if (form.errors?.['dateRange']) {
+            <small id="ending-error" class="text-xs text-red-500" role="alert">{{
+              endBeforeStartError
+            }}</small>
           }
-        </small>
-      }
-    </div>
+        }
+      </div>
 
-    <!-- Response note (optional) -->
-    <div class="field">
-      <label for="response_note" class="field-label">
-        {{ i18n.fields.responseNote }}
-      </label>
-      <textarea
-        pTextarea
-        id="response_note"
-        formControlName="response_note"
-        rows="3"
-        [maxlength]="500"
-        [attr.aria-describedby]="form.get('response_note')!.invalid && form.get('response_note')!.touched ? 'note-error' : null"
-        [class]="form.get('response_note')!.invalid && form.get('response_note')!.touched ? 'ng-invalid ng-dirty' : ''"
-      ></textarea>
-      @if (form.get('response_note')!.hasError('maxlength') && form.get('response_note')!.touched) {
-        <small id="note-error" class="field-error" role="alert">
-          {{ common.maxLength(500) }}
-        </small>
-      }
-    </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="location" class="text-sm font-medium text-slate-700">
+          {{ i18n.fields.location }}<span class="text-red-500" aria-hidden="true"> *</span>
+        </label>
+        <input
+          pInputText
+          type="text"
+          id="location"
+          class="w-full"
+          formControlName="location"
+          [maxlength]="255"
+          aria-required="true"
+          [attr.aria-describedby]="
+            form.get('location')!.invalid && form.get('location')!.touched ? 'location-error' : null
+          "
+          [class.ng-invalid]="form.get('location')!.invalid && form.get('location')!.touched"
+          [class.ng-dirty]="form.get('location')!.invalid && form.get('location')!.touched"
+        />
+        @if (form.get('location')!.invalid && form.get('location')!.touched) {
+          <small id="location-error" class="text-xs text-red-500" role="alert">
+            @if (form.get('location')!.hasError('required')) {
+              {{ common.required }}
+            } @else if (form.get('location')!.hasError('maxlength')) {
+              {{ common.maxLength(255) }}
+            }
+          </small>
+        }
+      </div>
 
-    <!-- Actions -->
-    <div class="form-actions">
-      <p-button
-        type="button"
-        [label]="common.back"
-        severity="secondary"
-        (onClick)="onBack()"
-        [disabled]="isLoading()"
-      />
-      <p-button
-        type="submit"
-        [label]="isLoading() ? common.loading : common.save"
-        [disabled]="isLoading()"
-        [loading]="isLoading()"
-        aria-live="polite"
-      />
-    </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="response_note" class="text-sm font-medium text-slate-700">{{
+          i18n.fields.responseNote
+        }}</label>
+        <textarea
+          pTextarea
+          id="response_note"
+          class="w-full"
+          formControlName="response_note"
+          rows="3"
+          [maxlength]="500"
+          [attr.aria-describedby]="
+            form.get('response_note')!.invalid && form.get('response_note')!.touched
+              ? 'note-error'
+              : null
+          "
+          [class.ng-invalid]="
+            form.get('response_note')!.invalid && form.get('response_note')!.touched
+          "
+          [class.ng-dirty]="
+            form.get('response_note')!.invalid && form.get('response_note')!.touched
+          "
+        ></textarea>
+        @if (
+          form.get('response_note')!.hasError('maxlength') && form.get('response_note')!.touched
+        ) {
+          <small id="note-error" class="text-xs text-red-500" role="alert">{{
+            common.maxLength(500)
+          }}</small>
+        }
+      </div>
 
-  </form>
-</section>
+      <div class="flex gap-3 pt-2">
+        <p-button
+          type="button"
+          [label]="common.back"
+          severity="secondary"
+          (onClick)="onBack()"
+          [disabled]="isLoading()"
+        />
+        <p-button
+          type="submit"
+          [label]="isLoading() ? common.loading : common.save"
+          [disabled]="isLoading()"
+          [loading]="isLoading()"
+          aria-live="polite"
+        />
+      </div>
+    </form>
+  </div>
+</div>

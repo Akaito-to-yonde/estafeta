@@ -38,10 +38,7 @@ export class MeetingListComponent {
 
   requiresAction(m: MeetingWithParties): boolean {
     const userId = this.profile()?.user_id;
-    return (
-      ['proposed', 'rescheduled'].includes(m.status) &&
-      m.last_updated_by !== userId
-    );
+    return ['proposed', 'rescheduled'].includes(m.status) && m.last_updated_by !== userId;
   }
 
   statusLabel(m: MeetingWithParties): string {

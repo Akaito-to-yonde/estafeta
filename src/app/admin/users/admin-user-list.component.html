@@ -1,5 +1,4 @@
 <section class="admin-user-list" aria-labelledby="admin-user-list-title">
-
   <!-- Header -->
   <header class="admin-user-list__header">
     <h1 id="admin-user-list-title">
@@ -41,7 +40,6 @@
       optionValue="value"
       [attr.aria-label]="labels.filterCategoria"
     />
-
   </fieldset>
 
   <!-- Error -->
@@ -99,7 +97,6 @@
           (keydown.space)="$event.stopPropagation()"
         >
           @if (profile.estado === 'pending') {
-
             <!-- Inline reject form -->
             @if (rejectingId() === profile.id) {
               <fieldset class="admin-user-list__reject-inline">
@@ -154,7 +151,6 @@
                 [attr.aria-label]="labels.rejectButton + ': ' + profile.email"
               ></button>
             }
-
           }
         </td>
       </tr>
@@ -180,9 +176,7 @@
       (click)="onPagePrev()"
       aria-label="Página anterior"
     ></button>
-    <span class="admin-user-list__page-info" aria-live="polite">
-      Página {{ currentPage() }}
-    </span>
+    <span class="admin-user-list__page-info" aria-live="polite"> Página {{ currentPage() }} </span>
     <button
       pButton
       type="button"
@@ -193,5 +187,4 @@
       aria-label="Página siguiente"
     ></button>
   </nav>
-
 </section>

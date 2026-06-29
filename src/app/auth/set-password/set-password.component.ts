@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../core/auth/auth.service';
 import { ES } from '../../shared/i18n/es';
 import { passwordMatchValidator } from '../../shared/validators/password-match.validator';
@@ -9,7 +11,7 @@ import { passwordMatchValidator } from '../../shared/validators/password-match.v
   selector: 'app-set-password',
   templateUrl: './set-password.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ButtonModule, InputTextModule],
 })
 export class SetPasswordComponent {
   private readonly authService = inject(AuthService);
@@ -60,8 +62,7 @@ export class SetPasswordComponent {
       await this.router.navigateByUrl(destination);
     } else {
       const msg = error.message ?? '';
-      const isExpired =
-        msg.includes('expired') || msg.includes('invalid') || msg.includes('Token');
+      const isExpired = msg.includes('expired') || msg.includes('invalid') || msg.includes('Token');
       this.errorMessage.set(isExpired ? ES.auth.expiredLink : ES.common.error);
     }
 

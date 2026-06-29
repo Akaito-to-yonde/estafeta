@@ -1,12 +1,7 @@
 import { DestroyRef, Injectable, Signal, inject, signal } from '@angular/core';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { SupabaseService } from '../../supabase.service';
-import {
-  CreateProfileDto,
-  Profile,
-  ProfileEstado,
-  ProfileFilters,
-} from '../models/profile.model';
+import { CreateProfileDto, Profile, ProfileEstado, ProfileFilters } from '../models/profile.model';
 import { PaginatedResult } from '../models/pagination.model';
 
 const PENDING_PAGE_SIZE = 50;
@@ -30,16 +25,15 @@ export class ProfileService {
     this.destroyRef.onDestroy(() => this.unsubscribeRealtime());
   }
 
-  async createProfile(
-    data: CreateProfileDto,
-  ): Promise<{ data: Profile | null; error: unknown }> {
-    const { data: profile, error } = await this.supabase.client
+  async createProfile(data: CreateProfileDto): Promise<{ data: Profile | null; error: unknown }> {
+    // Anonymous users cannot read rows from profile (SELECT policy requires auth.uid()).
+    // Avoid .select().single() here — PostgREST applies the SELECT policy to RETURNING *,
+    // which would return 0 rows and cause single() to throw even if the INSERT succeeded.
+    const { error } = await this.supabase.client
       .from('profile')
-      .insert({ ...data, estado: 'pending' satisfies ProfileEstado })
-      .select()
-      .single();
+      .insert({ ...data, estado: 'pending' satisfies ProfileEstado });
 
-    return { data: profile as Profile | null, error };
+    return { data: null, error };
   }
 
   async getProfile(userId: string): Promise<Profile | null> {
@@ -50,6 +44,26 @@ export class ProfileService {
       .single();
 
     return (data as Profile | null) ?? null;
+  }
+
+  async getProfileById(id: string): Promise<{ data: Profile | null; error: unknown }> {
+    const { data, error } = await this.supabase.client
+      .from('profile')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    return { data: (data as Profile | null) ?? null, error };
+  }
+
+  async emailExists(email: string): Promise<boolean> {
+    const { data } = await this.supabase.client
+      .from('profile')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
+
+    return !!data;
   }
 
   async getPendingProfiles(page: number): Promise<PaginatedResult<Profile>> {
@@ -76,10 +90,7 @@ export class ProfileService {
     };
   }
 
-  async getAllProfiles(
-    page: number,
-    filters: ProfileFilters,
-  ): Promise<PaginatedResult<Profile>> {
+  async getAllProfiles(page: number, filters: ProfileFilters): Promise<PaginatedResult<Profile>> {
     const from = (page - 1) * ALL_PAGE_SIZE;
     const to = from + ALL_PAGE_SIZE - 1;
 
@@ -129,10 +140,7 @@ export class ProfileService {
     return { error };
   }
 
-  async updateEstado(
-    profileId: string,
-    estado: ProfileEstado,
-  ): Promise<{ error: unknown }> {
+  async updateEstado(profileId: string, estado: ProfileEstado): Promise<{ error: unknown }> {
     const { error } = await this.supabase.client
       .from('profile')
       .update({ estado })
@@ -144,44 +152,38 @@ export class ProfileService {
   subscribeRealtime(): void {
     this.channel = this.supabase.client
       .channel('profile-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'profile' },
-        (payload) => {
-          switch (payload.eventType) {
-            case 'INSERT': {
-              const inserted = payload.new as Profile;
-              this._allProfiles.update((profiles) => [inserted, ...profiles]);
-              if (inserted.estado === 'pending') {
-                this._pendingProfiles.update((profiles) => [inserted, ...profiles]);
-              }
-              break;
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profile' }, (payload) => {
+        switch (payload.eventType) {
+          case 'INSERT': {
+            const inserted = payload.new as Profile;
+            this._allProfiles.update((profiles) => [inserted, ...profiles]);
+            if (inserted.estado === 'pending') {
+              this._pendingProfiles.update((profiles) => [inserted, ...profiles]);
             }
-            case 'UPDATE': {
-              const updated = payload.new as Profile;
-              this._allProfiles.update((profiles) =>
-                profiles.map((p) => (p.id === updated.id ? updated : p)),
-              );
-              this._pendingProfiles.update((profiles) =>
-                profiles.map((p) => (p.id === updated.id ? updated : p)),
-              );
-              break;
-            }
-            case 'DELETE': {
-              const deletedId = (payload.old as Partial<Profile>).id;
-              if (deletedId) {
-                this._allProfiles.update((profiles) =>
-                  profiles.filter((p) => p.id !== deletedId),
-                );
-                this._pendingProfiles.update((profiles) =>
-                  profiles.filter((p) => p.id !== deletedId),
-                );
-              }
-              break;
-            }
+            break;
           }
-        },
-      )
+          case 'UPDATE': {
+            const updated = payload.new as Profile;
+            this._allProfiles.update((profiles) =>
+              profiles.map((p) => (p.id === updated.id ? updated : p)),
+            );
+            this._pendingProfiles.update((profiles) =>
+              profiles.map((p) => (p.id === updated.id ? updated : p)),
+            );
+            break;
+          }
+          case 'DELETE': {
+            const deletedId = (payload.old as Partial<Profile>).id;
+            if (deletedId) {
+              this._allProfiles.update((profiles) => profiles.filter((p) => p.id !== deletedId));
+              this._pendingProfiles.update((profiles) =>
+                profiles.filter((p) => p.id !== deletedId),
+              );
+            }
+            break;
+          }
+        }
+      })
       .subscribe();
   }
 

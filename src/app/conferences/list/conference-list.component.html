@@ -1,6 +1,6 @@
-<section class="conference-list" aria-labelledby="conference-list-title">
-  <header class="conference-list__header">
-    <h1 id="conference-list-title">{{ i18n.listTitle }}</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">{{ i18n.listTitle }}</h1>
     @if (canCreate()) {
       <button
         pButton
@@ -8,103 +8,113 @@
         [label]="i18n.newButton"
         icon="pi pi-plus"
         (click)="onNew()"
-        aria-label="{{ i18n.newButton }}"
+        [attr.aria-label]="i18n.newButton"
       ></button>
     }
-  </header>
+  </div>
 
   @if (errorMessage()) {
-    <div class="conference-list__error" role="alert" aria-live="assertive">
+    <div
+      class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 mb-6"
+      role="alert"
+      aria-live="assertive"
+    >
       {{ errorMessage() }}
     </div>
   }
 
-  <p-table
-    [value]="conferences()"
-    [loading]="isLoading()"
-    [rows]="25"
-    [paginator]="conferences().length > 25"
-    responsiveLayout="scroll"
-    styleClass="p-datatable-sm"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th scope="col">{{ i18n.fields.subject }}</th>
-        <th scope="col">{{ i18n.fields.starting }}</th>
-        <th scope="col">{{ i18n.fields.ending }}</th>
-        <th scope="col">{{ i18n.fields.location }}</th>
-        <th scope="col">{{ i18n.fields.speaker }}</th>
-        <th scope="col"><span class="sr-only">Acciones</span></th>
-      </tr>
-    </ng-template>
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <p-table
+      [value]="conferences()"
+      [loading]="isLoading()"
+      [rows]="25"
+      [paginator]="conferences().length > 25"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr class="bg-slate-50 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+          <th scope="col" class="px-4 py-3 text-left">{{ i18n.fields.subject }}</th>
+          <th scope="col" class="px-4 py-3 text-left">{{ i18n.fields.starting }}</th>
+          <th scope="col" class="px-4 py-3 text-left">{{ i18n.fields.ending }}</th>
+          <th scope="col" class="px-4 py-3 text-left">{{ i18n.fields.location }}</th>
+          <th scope="col" class="px-4 py-3 text-left">{{ i18n.fields.speaker }}</th>
+          <th scope="col" class="px-4 py-3"><span class="sr-only">Acciones</span></th>
+        </tr>
+      </ng-template>
 
-    <ng-template pTemplate="body" let-conf>
-      <tr
-        (click)="onRowClick(conf)"
-        [style.cursor]="'pointer'"
-        [attr.aria-label]="'Ver conferencia: ' + conf.subject"
-        tabindex="0"
-        (keyup.enter)="onRowClick(conf)"
-      >
-        <td>{{ conf.subject }}</td>
-        <td>{{ conf.start | dateFormat: 'd MMM yyyy, HH:mm' }}</td>
-        <td>{{ conf.ending | dateFormat: 'd MMM yyyy, HH:mm' }}</td>
-        <td>{{ conf.location }}</td>
-        <td>{{ conf.speaker?.nombre_empresa }}</td>
-        <td class="conference-list__actions" (click)="$event.stopPropagation()">
-          @if (canManage(conf)) {
-            @if (confirmDeleteId() === conf.id) {
-              <span class="conference-list__confirm-delete" role="group" aria-label="Confirmar eliminación">
-                <button
-                  pButton
-                  type="button"
-                  [label]="common.confirm"
-                  severity="danger"
-                  size="small"
-                  (click)="onDeleteConfirm($event, conf)"
-                  [attr.aria-label]="'Confirmar eliminación de ' + conf.subject"
-                ></button>
-                <button
-                  pButton
-                  type="button"
-                  [label]="common.cancel"
-                  severity="secondary"
-                  size="small"
-                  (click)="onDeleteCancel($event)"
-                  aria-label="{{ common.cancel }}"
-                ></button>
+      <ng-template pTemplate="body" let-conf>
+        <tr
+          (click)="onRowClick(conf)"
+          [style.cursor]="'pointer'"
+          [attr.aria-label]="'Ver conferencia: ' + conf.subject"
+          tabindex="0"
+          (keyup.enter)="onRowClick(conf)"
+        >
+          <td class="font-medium text-slate-900">{{ conf.subject }}</td>
+          <td class="text-slate-600">{{ conf.start | dateFormat: 'd MMM yyyy, HH:mm' }}</td>
+          <td class="text-slate-600">{{ conf.ending | dateFormat: 'd MMM yyyy, HH:mm' }}</td>
+          <td class="text-slate-600">{{ conf.location }}</td>
+          <td class="text-slate-600">{{ conf.speaker?.nombre_empresa }}</td>
+          <td (click)="$event.stopPropagation()">
+            @if (canManage(conf)) {
+              <span
+                class="flex gap-2"
+                role="group"
+                [attr.aria-label]="'Acciones para ' + conf.subject"
+              >
+                @if (confirmDeleteId() === conf.id) {
+                  <button
+                    pButton
+                    type="button"
+                    [label]="common.confirm"
+                    severity="danger"
+                    size="small"
+                    (click)="onDeleteConfirm($event, conf)"
+                    [attr.aria-label]="'Confirmar eliminación de ' + conf.subject"
+                  ></button>
+                  <button
+                    pButton
+                    type="button"
+                    [label]="common.cancel"
+                    severity="secondary"
+                    size="small"
+                    (click)="onDeleteCancel($event)"
+                    [attr.aria-label]="common.cancel"
+                  ></button>
+                } @else {
+                  <button
+                    pButton
+                    type="button"
+                    [label]="i18n.editButton"
+                    severity="secondary"
+                    size="small"
+                    (click)="onEdit($event, conf)"
+                    [attr.aria-label]="i18n.editButton + ': ' + conf.subject"
+                  ></button>
+                  <button
+                    pButton
+                    type="button"
+                    [label]="i18n.deleteButton"
+                    severity="danger"
+                    size="small"
+                    (click)="onDeleteRequest($event, conf)"
+                    [attr.aria-label]="i18n.deleteButton + ': ' + conf.subject"
+                  ></button>
+                }
               </span>
-            } @else {
-              <button
-                pButton
-                type="button"
-                [label]="i18n.editButton"
-                severity="secondary"
-                size="small"
-                (click)="onEdit($event, conf)"
-                [attr.aria-label]="i18n.editButton + ': ' + conf.subject"
-              ></button>
-              <button
-                pButton
-                type="button"
-                [label]="i18n.deleteButton"
-                severity="danger"
-                size="small"
-                (click)="onDeleteRequest($event, conf)"
-                [attr.aria-label]="i18n.deleteButton + ': ' + conf.subject"
-              ></button>
             }
-          }
-        </td>
-      </tr>
-    </ng-template>
+          </td>
+        </tr>
+      </ng-template>
 
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="6" class="conference-list__empty" aria-live="polite">
-          {{ i18n.noResults }}
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-</section>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center text-slate-400 py-12" aria-live="polite">
+            {{ i18n.noResults }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

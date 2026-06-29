@@ -76,12 +76,12 @@ function buildMockSupabase() {
   };
 
   const fakeChannel = {
-    on: vi.fn().mockImplementation(
-      (_event: string, _filter: unknown, cb: (payload: unknown) => void) => {
+    on: vi
+      .fn()
+      .mockImplementation((_event: string, _filter: unknown, cb: (payload: unknown) => void) => {
         capturedRealtimeCallback = cb;
         return fakeChannel;
-      },
-    ),
+      }),
     subscribe: vi.fn().mockReturnThis(),
   };
 
@@ -241,9 +241,9 @@ describe('ProfileService', () => {
 
             await TestBed.runInInjectionContext(() => service.getAllProfiles(1, filters));
 
-            const eqCalls: string[] = (supabaseMock.queryChain.eq as ReturnType<typeof vi.fn>).mock.calls.map(
-              (c: unknown[]) => c[0] as string,
-            );
+            const eqCalls: string[] = (
+              supabaseMock.queryChain.eq as ReturnType<typeof vi.fn>
+            ).mock.calls.map((c: unknown[]) => c[0] as string);
 
             if (filters.estado !== undefined) {
               expect(eqCalls).toContain('estado');
@@ -425,11 +425,8 @@ describe('ProfileService', () => {
     it('registers a listener for postgres_changes on the profile table', () => {
       const { supabaseMock } = setup();
 
-      const [event, filter] = (supabaseMock.fakeChannel.on as ReturnType<typeof vi.fn>).mock.calls[0] as [
-        string,
-        { event: string; schema: string; table: string },
-        unknown,
-      ];
+      const [event, filter] = (supabaseMock.fakeChannel.on as ReturnType<typeof vi.fn>).mock
+        .calls[0] as [string, { event: string; schema: string; table: string }, unknown];
 
       expect(event).toBe('postgres_changes');
       expect(filter.event).toBe('*');

@@ -36,8 +36,8 @@ export const ES = {
     },
     categorias: {
       producer: 'Productor',
-      provider: 'Proveedor',
-      services: 'Servicios',
+      provider: 'Proveedor de productos',
+      services: 'Proveedor de servicios',
       client: 'Cliente',
     },
   },

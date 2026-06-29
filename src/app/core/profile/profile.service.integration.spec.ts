@@ -91,9 +91,7 @@ describe('ProfileService — integration (mock Supabase)', () => {
       await service.createProfile(dto);
 
       expect(supabaseMock.fromStub).toHaveBeenCalledWith('profile');
-      expect(chain['insert']).toHaveBeenCalledWith(
-        expect.objectContaining({ estado: 'pending' }),
-      );
+      expect(chain['insert']).toHaveBeenCalledWith(expect.objectContaining({ estado: 'pending' }));
     });
 
     it('does not pass any estado other than "pending" to insert', async () => {
@@ -110,7 +108,8 @@ describe('ProfileService — integration (mock Supabase)', () => {
 
       await service.createProfile(dto);
 
-      const insertedPayload = (chain['insert'] as ReturnType<typeof vi.fn>).mock.calls[0][0] as Record<string, unknown>;
+      const insertedPayload = (chain['insert'] as ReturnType<typeof vi.fn>).mock
+        .calls[0][0] as Record<string, unknown>;
       expect(insertedPayload['estado']).toBe('pending');
     });
   });
@@ -130,9 +129,7 @@ describe('ProfileService — integration (mock Supabase)', () => {
       await service.approveProfile(profileId);
 
       expect(supabaseMock.fromStub).toHaveBeenCalledWith('profile');
-      expect(chain['update']).toHaveBeenCalledWith(
-        expect.objectContaining({ estado: 'approved' }),
-      );
+      expect(chain['update']).toHaveBeenCalledWith(expect.objectContaining({ estado: 'approved' }));
       expect(chain['eq']).toHaveBeenCalledWith('id', profileId);
     });
   });
@@ -151,9 +148,7 @@ describe('ProfileService — integration (mock Supabase)', () => {
       await service.rejectAndDeleteProfile(profileId);
 
       expect(supabaseMock.fromStub).toHaveBeenCalledWith('profile');
-      expect(chain['update']).toHaveBeenCalledWith(
-        expect.objectContaining({ estado: 'rejected' }),
-      );
+      expect(chain['update']).toHaveBeenCalledWith(expect.objectContaining({ estado: 'rejected' }));
       expect(chain['eq']).toHaveBeenCalledWith('id', profileId);
     });
   });

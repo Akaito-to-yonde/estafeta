@@ -94,9 +94,7 @@ describe('MeetingService — integration (mock Supabase)', () => {
       await service.proposeMeeting(dto);
 
       expect(supabaseMock.fromStub).toHaveBeenCalledWith('meeting');
-      expect(chain['insert']).toHaveBeenCalledWith(
-        expect.objectContaining({ status: 'proposed' }),
-      );
+      expect(chain['insert']).toHaveBeenCalledWith(expect.objectContaining({ status: 'proposed' }));
     });
   });
 

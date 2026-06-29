@@ -1,85 +1,96 @@
-<section class="register-page" aria-labelledby="register-title">
-  <h1 id="register-title">{{ ES.register.title }}</h1>
+<div class="w-full max-w-xl bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+  <h1 id="register-title" class="text-2xl font-bold text-slate-900 mb-8">
+    {{ ES.register.title }}
+  </h1>
 
   @if (success()) {
-    <div class="register-success" role="status" aria-live="polite">
-      <p>{{ ES.register.successMessage }}</p>
-      <a routerLink="/auth/login">{{ ES.auth.loginButton }}</a>
-    </div>
+    <output
+      class="bg-green-50 border border-green-200 text-green-800 rounded-xl px-6 py-8 text-center flex flex-col items-center"
+      aria-live="polite"
+    >
+      <i class="pi pi-check-circle text-green-500 text-4xl mb-4 block" aria-hidden="true"></i>
+      <p class="mb-4">{{ ES.register.successMessage }}</p>
+      <a routerLink="/auth/login" class="text-brand-600 hover:text-brand-700 font-medium text-sm">{{
+        ES.auth.loginButton
+      }}</a>
+    </output>
   } @else {
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-
-      <!-- Email -->
-      <div class="field">
-        <label for="email">{{ ES.register.fields.email }}</label>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="flex flex-col gap-5">
+      <div class="flex flex-col gap-1.5">
+        <label for="email" class="text-sm font-medium text-slate-700">{{
+          ES.register.fields.email
+        }}</label>
         <input
           id="email"
           type="email"
           pInputText
+          class="w-full"
           formControlName="email"
           autocomplete="email"
           [attr.aria-describedby]="
-            (form.controls.email.touched && form.controls.email.invalid)
-              ? 'email-error'
-              : null
+            form.controls.email.touched && form.controls.email.invalid ? 'email-error' : null
           "
           [attr.aria-invalid]="
-            form.controls.email.touched && form.controls.email.invalid
-              ? 'true'
-              : null
+            form.controls.email.touched && form.controls.email.invalid ? 'true' : null
           "
         />
         @if (form.controls.email.touched) {
           @if (form.controls.email.errors?.['required']) {
-            <small id="email-error" class="field-error">{{ ES.common.required }}</small>
+            <small id="email-error" class="text-xs text-red-500">{{ ES.common.required }}</small>
           } @else if (form.controls.email.errors?.['emailFormat']) {
-            <small id="email-error" class="field-error">{{ ES.common.invalidEmail }}</small>
+            <small id="email-error" class="text-xs text-red-500">{{
+              ES.common.invalidEmail
+            }}</small>
           } @else if (form.controls.email.errors?.['emailExists']) {
-            <small id="email-error" class="field-error">{{ ES.register.emailExists }}</small>
+            <small id="email-error" class="text-xs text-red-500">{{
+              ES.register.emailExists
+            }}</small>
           }
         }
         @if (form.controls.email.pending) {
-          <small class="field-hint">{{ ES.common.loading }}</small>
+          <small class="text-xs text-slate-400">{{ ES.common.loading }}</small>
         }
       </div>
 
-      <!-- Categoría -->
-      <div class="field">
-        <label for="categoria">{{ ES.register.fields.categoria }}</label>
+      <div class="flex flex-col gap-1.5">
+        <label for="categoria" class="text-sm font-medium text-slate-700">{{
+          ES.register.fields.categoria
+        }}</label>
         <p-select
           inputId="categoria"
           formControlName="categoria"
+          styleClass="w-full"
           [options]="categoriaOptions"
           optionLabel="label"
           optionValue="value"
           [placeholder]="ES.register.fields.categoria"
           [attr.aria-describedby]="
-            (form.controls.categoria.touched && form.controls.categoria.invalid)
+            form.controls.categoria.touched && form.controls.categoria.invalid
               ? 'categoria-error'
               : null
           "
           [attr.aria-invalid]="
-            form.controls.categoria.touched && form.controls.categoria.invalid
-              ? 'true'
-              : null
+            form.controls.categoria.touched && form.controls.categoria.invalid ? 'true' : null
           "
         />
         @if (form.controls.categoria.touched && form.controls.categoria.errors?.['required']) {
-          <small id="categoria-error" class="field-error">{{ ES.common.required }}</small>
+          <small id="categoria-error" class="text-xs text-red-500">{{ ES.common.required }}</small>
         }
       </div>
 
-      <!-- Nombre empresa -->
-      <div class="field">
-        <label for="nombre_empresa">{{ ES.register.fields.nombreEmpresa }}</label>
+      <div class="flex flex-col gap-1.5">
+        <label for="nombre_empresa" class="text-sm font-medium text-slate-700">{{
+          ES.register.fields.nombreEmpresa
+        }}</label>
         <input
           id="nombre_empresa"
           type="text"
           pInputText
+          class="w-full"
           autocomplete="organization"
           formControlName="nombre_empresa"
           [attr.aria-describedby]="
-            (form.controls.nombre_empresa.touched && form.controls.nombre_empresa.invalid)
+            form.controls.nombre_empresa.touched && form.controls.nombre_empresa.invalid
               ? 'nombre-error'
               : null
           "
@@ -91,24 +102,28 @@
         />
         @if (form.controls.nombre_empresa.touched) {
           @if (form.controls.nombre_empresa.errors?.['required']) {
-            <small id="nombre-error" class="field-error">{{ ES.common.required }}</small>
+            <small id="nombre-error" class="text-xs text-red-500">{{ ES.common.required }}</small>
           } @else if (form.controls.nombre_empresa.errors?.['maxlength']) {
-            <small id="nombre-error" class="field-error">{{ ES.common.maxLength(255) }}</small>
+            <small id="nombre-error" class="text-xs text-red-500">{{
+              ES.common.maxLength(255)
+            }}</small>
           }
         }
       </div>
 
-      <!-- Dirección legal -->
-      <div class="field">
-        <label for="direccion_legal">{{ ES.register.fields.direccionLegal }}</label>
+      <div class="flex flex-col gap-1.5">
+        <label for="direccion_legal" class="text-sm font-medium text-slate-700">{{
+          ES.register.fields.direccionLegal
+        }}</label>
         <input
           id="direccion_legal"
           type="text"
           pInputText
+          class="w-full"
           autocomplete="address-line1"
           formControlName="direccion_legal"
           [attr.aria-describedby]="
-            (form.controls.direccion_legal.touched && form.controls.direccion_legal.invalid)
+            form.controls.direccion_legal.touched && form.controls.direccion_legal.invalid
               ? 'direccion-error'
               : null
           "
@@ -120,126 +135,140 @@
         />
         @if (form.controls.direccion_legal.touched) {
           @if (form.controls.direccion_legal.errors?.['required']) {
-            <small id="direccion-error" class="field-error">{{ ES.common.required }}</small>
+            <small id="direccion-error" class="text-xs text-red-500">{{
+              ES.common.required
+            }}</small>
           } @else if (form.controls.direccion_legal.errors?.['maxlength']) {
-            <small id="direccion-error" class="field-error">{{ ES.common.maxLength(500) }}</small>
+            <small id="direccion-error" class="text-xs text-red-500">{{
+              ES.common.maxLength(500)
+            }}</small>
           }
         }
       </div>
 
-      <!-- Contacto -->
-      <div class="field">
-        <label for="contacto">{{ ES.register.fields.contacto }}</label>
+      <div class="flex flex-col gap-1.5">
+        <label for="contacto" class="text-sm font-medium text-slate-700">{{
+          ES.register.fields.contacto
+        }}</label>
         <input
           id="contacto"
           type="text"
           pInputText
+          class="w-full"
           autocomplete="name"
           formControlName="contacto"
           [attr.aria-describedby]="
-            (form.controls.contacto.touched && form.controls.contacto.invalid)
+            form.controls.contacto.touched && form.controls.contacto.invalid
               ? 'contacto-error'
               : null
           "
           [attr.aria-invalid]="
-            form.controls.contacto.touched && form.controls.contacto.invalid
-              ? 'true'
-              : null
+            form.controls.contacto.touched && form.controls.contacto.invalid ? 'true' : null
           "
         />
         @if (form.controls.contacto.touched) {
           @if (form.controls.contacto.errors?.['required']) {
-            <small id="contacto-error" class="field-error">{{ ES.common.required }}</small>
+            <small id="contacto-error" class="text-xs text-red-500">{{ ES.common.required }}</small>
           } @else if (form.controls.contacto.errors?.['maxlength']) {
-            <small id="contacto-error" class="field-error">{{ ES.common.maxLength(255) }}</small>
+            <small id="contacto-error" class="text-xs text-red-500">{{
+              ES.common.maxLength(255)
+            }}</small>
           }
         }
       </div>
 
-      <!-- Teléfono fijo (optional) -->
-      <div class="field">
-        <label for="num_fijo">{{ ES.register.fields.numFijo }}</label>
+      <div class="flex flex-col gap-1.5">
+        <label for="num_fijo" class="text-sm font-medium text-slate-700">{{
+          ES.register.fields.numFijo
+        }}</label>
         <input
           id="num_fijo"
           type="tel"
           pInputText
+          class="w-full"
           formControlName="num_fijo"
           autocomplete="tel"
           [attr.aria-describedby]="
-            (form.controls.num_fijo.touched && form.controls.num_fijo.invalid)
+            form.controls.num_fijo.touched && form.controls.num_fijo.invalid
               ? 'num-fijo-error'
               : null
           "
           [attr.aria-invalid]="
-            form.controls.num_fijo.touched && form.controls.num_fijo.invalid
-              ? 'true'
-              : null
+            form.controls.num_fijo.touched && form.controls.num_fijo.invalid ? 'true' : null
           "
         />
         @if (form.controls.num_fijo.touched && form.controls.num_fijo.errors?.['maxlength']) {
-          <small id="num-fijo-error" class="field-error">{{ ES.common.maxLength(20) }}</small>
+          <small id="num-fijo-error" class="text-xs text-red-500">{{
+            ES.common.maxLength(20)
+          }}</small>
         }
       </div>
 
-      <!-- Teléfono móvil (optional) -->
-      <div class="field">
-        <label for="num_movil">{{ ES.register.fields.numMovil }}</label>
+      <div class="flex flex-col gap-1.5">
+        <label for="num_movil" class="text-sm font-medium text-slate-700">{{
+          ES.register.fields.numMovil
+        }}</label>
         <input
           id="num_movil"
           type="tel"
           pInputText
+          class="w-full"
           formControlName="num_movil"
           autocomplete="tel"
           [attr.aria-describedby]="
-            (form.controls.num_movil.touched && form.controls.num_movil.invalid)
+            form.controls.num_movil.touched && form.controls.num_movil.invalid
               ? 'num-movil-error'
               : null
           "
           [attr.aria-invalid]="
-            form.controls.num_movil.touched && form.controls.num_movil.invalid
-              ? 'true'
-              : null
+            form.controls.num_movil.touched && form.controls.num_movil.invalid ? 'true' : null
           "
         />
         @if (form.controls.num_movil.touched && form.controls.num_movil.errors?.['maxlength']) {
-          <small id="num-movil-error" class="field-error">{{ ES.common.maxLength(20) }}</small>
+          <small id="num-movil-error" class="text-xs text-red-500">{{
+            ES.common.maxLength(20)
+          }}</small>
         }
       </div>
 
-      <!-- Actividad (optional) -->
-      <div class="field">
-        <label for="actividad">{{ ES.register.fields.actividad }}</label>
+      <div class="flex flex-col gap-1.5">
+        <label for="actividad" class="text-sm font-medium text-slate-700">{{
+          ES.register.fields.actividad
+        }}</label>
         <textarea
           id="actividad"
           pTextarea
+          class="w-full"
           formControlName="actividad"
           rows="3"
           [attr.aria-describedby]="
-            (form.controls.actividad.touched && form.controls.actividad.invalid)
+            form.controls.actividad.touched && form.controls.actividad.invalid
               ? 'actividad-error'
               : null
           "
           [attr.aria-invalid]="
-            form.controls.actividad.touched && form.controls.actividad.invalid
-              ? 'true'
-              : null
+            form.controls.actividad.touched && form.controls.actividad.invalid ? 'true' : null
           "
         ></textarea>
         @if (form.controls.actividad.touched && form.controls.actividad.errors?.['maxlength']) {
-          <small id="actividad-error" class="field-error">{{ ES.common.maxLength(500) }}</small>
+          <small id="actividad-error" class="text-xs text-red-500">{{
+            ES.common.maxLength(500)
+          }}</small>
         }
       </div>
 
-      <!-- Oferta / búsqueda (optional) -->
-      <div class="field">
-        <label for="oferta_busqueda">{{ ES.register.fields.ofertaBusqueda }}</label>
+      <div class="flex flex-col gap-1.5">
+        <label for="oferta_busqueda" class="text-sm font-medium text-slate-700">{{
+          ES.register.fields.ofertaBusqueda
+        }}</label>
         <textarea
           id="oferta_busqueda"
           pTextarea
+          class="w-full"
           formControlName="oferta_busqueda"
           rows="4"
           [attr.aria-describedby]="
-            (form.controls.oferta_busqueda.touched && form.controls.oferta_busqueda.invalid)
+            form.controls.oferta_busqueda.touched && form.controls.oferta_busqueda.invalid
               ? 'oferta-error'
               : null
           "
@@ -249,28 +278,40 @@
               : null
           "
         ></textarea>
-        @if (form.controls.oferta_busqueda.touched && form.controls.oferta_busqueda.errors?.['maxlength']) {
-          <small id="oferta-error" class="field-error">{{ ES.common.maxLength(1000) }}</small>
+        @if (
+          form.controls.oferta_busqueda.touched &&
+          form.controls.oferta_busqueda.errors?.['maxlength']
+        ) {
+          <small id="oferta-error" class="text-xs text-red-500">{{
+            ES.common.maxLength(1000)
+          }}</small>
         }
       </div>
 
-      <!-- Global error -->
       @if (errorMessage()) {
-        <div class="form-error" role="alert" aria-live="assertive">
+        <div
+          class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3"
+          role="alert"
+          aria-live="assertive"
+        >
           {{ errorMessage() }}
         </div>
       }
 
-      <!-- Submit -->
       <p-button
         type="submit"
+        styleClass="w-full"
+        aria-live="polite"
         [label]="isLoading() ? ES.common.loading : ES.register.submitButton"
         [disabled]="isLoading()"
         [loading]="isLoading()"
-        aria-live="polite"
       />
     </form>
 
-    <a routerLink="/auth/login" class="back-link">{{ ES.common.back }}</a>
+    <p class="mt-6 text-center text-sm text-slate-500">
+      <a routerLink="/auth/login" class="text-brand-600 hover:text-brand-700 font-medium">{{
+        ES.common.back
+      }}</a>
+    </p>
   }
-</section>
+</div>

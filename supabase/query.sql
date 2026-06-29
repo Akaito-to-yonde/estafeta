@@ -348,13 +348,18 @@ ALTER PUBLICATION supabase_realtime ADD TABLE meeting;
 
 ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
 
--- SELECT: users see only their own row; admins see all rows
+-- SELECT: users see only their own row; admins see all rows;
+-- anonymous users can see pending profiles (user_id IS NULL) so the login
+-- form can distinguish "not registered" from "pending approval".
+-- Once the invite is generated and user_id is linked, the row is no longer
+-- visible to anonymous users — only to the authenticated owner.
 DROP POLICY IF EXISTS profile_select ON profile;
 CREATE POLICY profile_select ON profile
   FOR SELECT
   USING (
     (user_id = auth.uid())
     OR ((auth.jwt() -> 'app_metadata' ->> 'categoria') = 'admin')
+    OR (user_id IS NULL)
   );
 
 -- INSERT: open to unauthenticated requests so new users can self-register

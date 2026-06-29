@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -22,7 +17,6 @@ import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 
 import { ProfileService } from '../../core/profile/profile.service';
-import { SupabaseService } from '../../supabase.service';
 import { UserCategoria } from '../../core/models/profile.model';
 import { emailFormatValidator } from '../../shared/validators/email-format.validator';
 import { ES } from '../../shared/i18n/es';
@@ -47,7 +41,6 @@ interface CategoriaOption {
 })
 export class RegisterComponent {
   private readonly profileService = inject(ProfileService);
-  private readonly supabaseService = inject(SupabaseService);
 
   protected readonly ES = ES;
 
@@ -107,16 +100,8 @@ export class RegisterComponent {
       const email: string = control.value;
       if (!email) return of(null);
       return timer(400).pipe(
-        switchMap(() =>
-          from(
-            this.supabaseService.client
-              .from('profile')
-              .select('id')
-              .eq('email', email)
-              .maybeSingle()
-          )
-        ),
-        map((result) => (result.data ? { emailExists: true } : null))
+        switchMap(() => from(this.profileService.emailExists(email))),
+        map((exists) => (exists ? { emailExists: true } : null)),
       );
     };
   }
@@ -147,6 +132,7 @@ export class RegisterComponent {
     const { error } = await this.profileService.createProfile(dto);
 
     if (error) {
+      console.error('[RegisterComponent] createProfile error:', error);
       this.errorMessage.set(ES.common.error);
     } else {
       this.success.set(true);

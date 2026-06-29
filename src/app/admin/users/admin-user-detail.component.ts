@@ -1,16 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProfileService } from '../../core/profile/profile.service';
-import { SupabaseService } from '../../supabase.service';
 import { Profile } from '../../core/models/profile.model';
 import { DateFormatPipe } from '../../shared/pipes/date-format.pipe';
 import { ES } from '../../shared/i18n/es';
@@ -25,7 +18,6 @@ export class AdminUserDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly profileService = inject(ProfileService);
-  private readonly supabase = inject(SupabaseService);
 
   readonly profile = signal<Profile | null>(null);
   readonly isLoading = signal(true);
@@ -54,16 +46,11 @@ export class AdminUserDetailComponent implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     try {
-      const { data, error } = await this.supabase.client
-        .from('profile')
-        .select('*')
-        .eq('id', this.profileId)
-        .single();
-
+      const { data, error } = await this.profileService.getProfileById(this.profileId);
       if (error || !data) {
         this.errorMessage.set(ES.common.error);
       } else {
-        this.profile.set(data as Profile);
+        this.profile.set(data);
       }
     } catch {
       this.errorMessage.set(ES.common.error);

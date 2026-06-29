@@ -7,17 +7,9 @@ import {
   computed,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  ReactiveFormsModule,
-  FormGroup,
-  FormControl,
-  Validators,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MeetingService } from '../../core/meeting/meeting.service';
-import type {
-  MeetingWithParties,
-  RescheduleMeetingDto,
-} from '../../core/models/meeting.model';
+import type { MeetingWithParties, RescheduleMeetingDto } from '../../core/models/meeting.model';
 import { AuthService } from '../../core/auth/auth.service';
 import { futureDateValidator } from '../../shared/validators/future-date.validator';
 import { dateRangeValidator } from '../../shared/validators/date-range.validator';
@@ -68,7 +60,7 @@ export class MeetingDetailComponent implements OnInit {
       location: new FormControl('', [Validators.required]),
       response_note: new FormControl(''),
     },
-    { validators: dateRangeValidator('start', 'ending') }
+    { validators: dateRangeValidator('start', 'ending') },
   );
 
   async ngOnInit(): Promise<void> {

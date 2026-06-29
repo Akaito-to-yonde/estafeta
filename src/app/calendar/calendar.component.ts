@@ -19,20 +19,20 @@ import {
 import { ES } from '../shared/i18n/es';
 
 const COLOR_MAP: Record<CalendarEventColor, string> = {
-  blue:  '#3b82f6',
+  blue: '#3b82f6',
   green: '#22c55e',
-  red:   '#ef4444',
+  red: '#ef4444',
 };
 
 function mapConference(c: ConferenceWithSpeaker): CalendarEvent {
   return {
-    id:       `conference-${c.id}`,
+    id: `conference-${c.id}`,
     sourceId: c.id,
-    type:     'conference',
-    title:    c.subject,
-    start:    c.start,
-    end:      c.ending,
-    color:    'blue',
+    type: 'conference',
+    title: c.subject,
+    start: c.start,
+    end: c.ending,
+    color: 'blue',
   };
 }
 
@@ -51,25 +51,25 @@ function mapMeeting(m: MeetingWithParties): CalendarEvent {
   }
 
   return {
-    id:       `meeting-${m.id}`,
+    id: `meeting-${m.id}`,
     sourceId: m.id,
-    type:     'meeting',
-    title:    `${m.speaker.nombre_empresa} / ${m.participant.nombre_empresa}`,
-    start:    m.start,
-    end:      m.ending,
+    type: 'meeting',
+    title: `${m.speaker.nombre_empresa} / ${m.participant.nombre_empresa}`,
+    start: m.start,
+    end: m.ending,
     color,
   };
 }
 
 function toEventInput(event: CalendarEvent): EventInput {
   return {
-    id:              event.id,
-    title:           event.title,
-    start:           event.start,
-    end:             event.end,
+    id: event.id,
+    title: event.title,
+    start: event.start,
+    end: event.end,
     backgroundColor: COLOR_MAP[event.color],
-    borderColor:     COLOR_MAP[event.color],
-    extendedProps:   { sourceId: event.sourceId, type: event.type },
+    borderColor: COLOR_MAP[event.color],
+    extendedProps: { sourceId: event.sourceId, type: event.type },
   };
 }
 
@@ -80,10 +80,10 @@ function toEventInput(event: CalendarEvent): EventInput {
   imports: [FullCalendarModule],
 })
 export class CalendarComponent {
-  private readonly router            = inject(Router);
-  private readonly authService       = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
   private readonly conferenceService = inject(ConferenceService);
-  private readonly meetingService    = inject(MeetingService);
+  private readonly meetingService = inject(MeetingService);
 
   readonly ES = ES;
 
@@ -95,22 +95,22 @@ export class CalendarComponent {
   ]);
 
   readonly calendarOptions = computed<CalendarOptions>(() => ({
-    plugins:      [dayGridPlugin, timeGridPlugin, interactionPlugin],
-    initialView:  'dayGridMonth',
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    initialView: 'dayGridMonth',
     headerToolbar: {
-      left:   'prev,next today',
+      left: 'prev,next today',
       center: 'title',
-      right:  'dayGridMonth,timeGridWeek',
+      right: 'dayGridMonth,timeGridWeek',
     },
-    locale:      'es',
+    locale: 'es',
     buttonText: {
-      today:  'Hoy',
-      month:  'Mes',
-      week:   'Semana',
+      today: 'Hoy',
+      month: 'Mes',
+      week: 'Semana',
     },
-    events:      this.calendarEvents().map(toEventInput),
-    eventClick:  this.onEventClick.bind(this),
-    height:      'auto',
+    events: this.calendarEvents().map(toEventInput),
+    eventClick: this.onEventClick.bind(this),
+    height: 'auto',
   }));
 
   onEventClick(arg: EventClickArg): void {

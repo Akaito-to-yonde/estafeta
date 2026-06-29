@@ -1,24 +1,33 @@
-<div class="login-container">
-  <h1>{{ es.auth.loginTitle }}</h1>
+<div class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+  <h1 class="text-2xl font-bold text-slate-900 mb-8">{{ es.auth.loginTitle }}</h1>
 
   @if (step() === 1) {
-    <form [formGroup]="emailForm" (ngSubmit)="onEmailSubmit()">
-      <div class="field">
-        <label for="email">{{ es.auth.emailLabel }}</label>
+    <form [formGroup]="emailForm" (ngSubmit)="onEmailSubmit()" class="flex flex-col gap-5">
+      <div class="flex flex-col gap-1.5">
+        <label for="email" class="text-sm font-medium text-slate-700">{{
+          es.auth.emailLabel
+        }}</label>
         <input
           id="email"
           type="email"
           pInputText
+          class="w-full"
           formControlName="email"
-          [attr.aria-describedby]="emailForm.controls.email.invalid && emailForm.controls.email.touched ? 'email-error' : null"
+          [attr.aria-describedby]="
+            emailForm.controls.email.invalid && emailForm.controls.email.touched
+              ? 'email-error'
+              : null
+          "
           autocomplete="email"
         />
         @if (emailForm.controls.email.touched && emailForm.controls.email.hasError('required')) {
-          <small id="email-error" class="field-error" role="alert">
+          <small id="email-error" class="text-xs text-red-500" role="alert">
             {{ es.common.required }}
           </small>
-        } @else if (emailForm.controls.email.touched && emailForm.controls.email.hasError('emailFormat')) {
-          <small id="email-error" class="field-error" role="alert">
+        } @else if (
+          emailForm.controls.email.touched && emailForm.controls.email.hasError('emailFormat')
+        ) {
+          <small id="email-error" class="text-xs text-red-500" role="alert">
             {{ es.common.invalidEmail }}
           </small>
         }
@@ -30,6 +39,7 @@
 
       <p-button
         type="submit"
+        styleClass="w-full"
         [label]="isLoading() ? es.common.loading : es.auth.loginButton"
         [disabled]="isLoading()"
         [loading]="isLoading()"
@@ -38,23 +48,35 @@
   }
 
   @if (step() === 2) {
-    <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()">
-      <div class="field">
-        <span class="email-display">{{ emailValue }}</span>
+    <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()" class="flex flex-col gap-5">
+      <div class="flex flex-col gap-1.5">
+        <span class="text-sm font-medium text-slate-500 bg-slate-50 rounded-lg px-3 py-2">{{
+          emailValue
+        }}</span>
       </div>
 
-      <div class="field">
-        <label for="password">{{ es.auth.passwordLabel }}</label>
+      <div class="flex flex-col gap-1.5">
+        <label for="password" class="text-sm font-medium text-slate-700">{{
+          es.auth.passwordLabel
+        }}</label>
         <input
           id="password"
           type="password"
           pInputText
+          class="w-full"
           formControlName="password"
-          [attr.aria-describedby]="passwordForm.controls.password.invalid && passwordForm.controls.password.touched ? 'password-error' : null"
+          [attr.aria-describedby]="
+            passwordForm.controls.password.invalid && passwordForm.controls.password.touched
+              ? 'password-error'
+              : null
+          "
           autocomplete="current-password"
         />
-        @if (passwordForm.controls.password.touched && passwordForm.controls.password.hasError('required')) {
-          <small id="password-error" class="field-error" role="alert">
+        @if (
+          passwordForm.controls.password.touched &&
+          passwordForm.controls.password.hasError('required')
+        ) {
+          <small id="password-error" class="text-xs text-red-500" role="alert">
             {{ es.common.required }}
           </small>
         }
@@ -66,6 +88,7 @@
 
       <p-button
         type="submit"
+        styleClass="w-full"
         [label]="isLoading() ? es.common.loading : es.auth.loginButton"
         [disabled]="isLoading()"
         [loading]="isLoading()"
@@ -73,5 +96,9 @@
     </form>
   }
 
-  <a routerLink="/auth/register">{{ es.auth.registerLink }}</a>
+  <p class="mt-6 text-center text-sm text-slate-500">
+    <a routerLink="/auth/register" class="text-brand-600 hover:text-brand-700 font-medium">{{
+      es.auth.registerLink
+    }}</a>
+  </p>
 </div>

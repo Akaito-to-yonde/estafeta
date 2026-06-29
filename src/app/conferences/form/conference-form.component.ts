@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
@@ -120,12 +114,8 @@ export class ConferenceFormComponent implements OnInit {
       });
 
       if (overlapResult.hasOverlap) {
-        const conferenceConflicts = overlapResult.conflicts.filter(
-          (c) => c.type === 'conference',
-        );
-        const meetingConflictList = overlapResult.conflicts.filter(
-          (c) => c.type === 'meeting',
-        );
+        const conferenceConflicts = overlapResult.conflicts.filter((c) => c.type === 'conference');
+        const meetingConflictList = overlapResult.conflicts.filter((c) => c.type === 'meeting');
 
         if (conferenceConflicts.length > 0) {
           this.overlapError.set(ES.conferences.errors.overlap);

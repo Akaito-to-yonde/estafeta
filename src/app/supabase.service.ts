@@ -8,7 +8,7 @@ import { environment } from '../environments/environment';
 export class SupabaseService {
   private readonly _client: SupabaseClient = createClient(
     environment.supabaseUrl,
-    environment.supabaseKey
+    environment.supabaseKey,
   );
 
   get client(): SupabaseClient {

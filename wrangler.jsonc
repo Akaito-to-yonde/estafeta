@@ -3,12 +3,10 @@
   "name": "estafeta",
   "compatibility_date": "2026-06-27",
   "observability": {
-    "enabled": true
+    "enabled": true,
   },
   "assets": {
-    "directory": "dist/estafeta/browser/"
+    "directory": "dist/estafeta/browser/",
   },
-  "compatibility_flags": [
-    "nodejs_compat"
-  ]
+  "compatibility_flags": ["nodejs_compat"],
 }
